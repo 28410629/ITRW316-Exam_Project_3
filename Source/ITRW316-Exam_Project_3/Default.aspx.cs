@@ -6,16 +6,54 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Diagnostics;
 using System.Management;   //This namespace is used to work with WMI classes. For using this namespace add reference of System.Management.dll .
-using Microsoft.Win32;     //This namespace is used to work with Registry editor.
 
 public partial class _Default : Page
 {
+    // raw values are in KB
+    public long freePhysicalMemory = 0; 
+    public long freeVirtualMemory = 0;
+    public long totalVisibleMemorySize = 0;
+    public long totalVirtualMemorySize = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        //SystemInfo si = new SystemInfo();       //Create an object of SystemInfo class.
-        //si.getOperatingSystemInfo();            //Call get operating system info method which will display operating system information.
-        //si.getProcessorInfo();                  //Call get  processor info method which will display processor info.
-        //Console.ReadLine();
+        ObjectQuery wql = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher(wql);
+        ManagementObjectCollection results = searcher.Get();
+
+        foreach (ManagementObject result in results)
+        {
+            // physical memory details
+            freePhysicalMemory = Convert.ToInt64(result["FreePhysicalMemory"]);
+            totalVisibleMemorySize = Convert.ToInt64(result["TotalVisibleMemorySize"]);
+
+            // virtual memory details
+            freeVirtualMemory = Convert.ToInt64(result["FreeVirtualMemory"]);
+            totalVirtualMemorySize = Convert.ToInt64(result["TotalVirtualMemorySize"]);
+            
+            // assign values to labels
+            LabelSystemMemory.Text = (freePhysicalMemory / 1024).ToString() + " MB";
+        }
+    }
+
+    public long SizeOS = 6;
+
+    protected void TextBoxSizeOS_TextChanged(object sender, EventArgs e)
+    {
+        
+        
+    }
+
+    public void updateLabels()
+    {
+        LabelOSSize.Text = SizeOS.ToString();
+        LabelSimulationSize.Text = ((freePhysicalMemory / 1024) - (SizeOS)).ToString();
+    }
+
+    protected void ButtonCalculate_Click(object sender, EventArgs e)
+    {
+        SizeOS = (Convert.ToInt64(TextBoxSizeOS.Text));
+        updateLabels();
     }
 }
 
