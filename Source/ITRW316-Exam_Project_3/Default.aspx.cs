@@ -26,6 +26,7 @@ public partial class _Default : Page
     public double percentageInStorage = 0.00;
 
     private Simulation simulation;
+    public Simulation sim;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -94,12 +95,25 @@ public partial class _Default : Page
 
     public void setStatistics(LogSystem log)
     {
-        LabelTotalPrograms.Text = log.getLog();
+        LabelTotalPrograms.Text = log.getTotalPrograms();
+        LabelTotalDroppedPages.Text = log.getTotalDroppedPages();
+        LabelTotalFailedPageReads.Text = log.getTotalPageReadsFailed();
+        LabelTotalPageFaults.Text = log.getTotalPageFaults();
+        LabelTotalPageFaultsResolved.Text = log.getTotalPageFaultsResolved();
+        LabelTotalPageReads.Text = log.getTotalPageReads();
+        LabelTotalSuccesfulPageReads.Text = log.getTotalPageReadsSuccesful();
+        LabelTotalSwappedPages.Text = log.getTotalSwappedPages();
+        LabelTotalUnswappedPages.Text = log.getTotalUnswappedPages();
     }
 
     public void setReadStatus(string val)
     {
         LabelReadStatus.Text = val;
+    }
+
+    public void setSimulation(Simulation sim)
+    {
+        this.sim = sim;
     }
 
     public void setSimulationStatus(string val, System.Drawing.Color color)
@@ -124,10 +138,7 @@ public partial class _Default : Page
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
     {
-        if (simulation != null)
-        {
-            simulation.userReadFunction(DropDownListProgramsRead.SelectedValue);
-        }
+        sim.userReadFunction(DropDownListProgramsRead.SelectedValue);
     }
 }
 
@@ -220,6 +231,8 @@ public class Simulation
             }
             else
             {
+                // statistics
+                log.logPageFaults();
                 if (program.getDroppedStatus())
                 {
                     // statistics
@@ -229,9 +242,8 @@ public class Simulation
                 else
                 {
                     // statistics
-                    log.logPageFaultsResolved();
                     log.logSuccessfulPageRead();
-                    log.logPageFaults();
+                    log.logPageFaultsResolved();
                     // run move to physical
                     moveToPhysical(index);
                     // report
@@ -260,6 +272,7 @@ public class Simulation
             {
                 // add to physical
                 programs.Add(program);
+                physicalCounter++;
                 // stats
                 log.logPageAdd();
             }
@@ -280,6 +293,7 @@ public class Simulation
             _mainPage.setLists(programs);
             _mainPage.setStatistics(log);
             _mainPage.setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
+            _mainPage.setSimulation(this);
         }
     }
 
@@ -302,13 +316,17 @@ public class Simulation
             if (secondaryCounter < secondaryAllowed)
             {
                 assignToMemory(program, programIndex, false);
+                secondaryCounter++;
+                log.logPageSwap();
             }
             else
             {
                 // drop oldest in secondary
                 programs.ElementAt(findOldestSecondary()).setDroppedStatus(true);
+                log.logPageDrop();
                 // add to secondary
                 assignToMemory(program, programIndex, false);
+                log.logPageSwap();
             }
         }
         catch (Exception)
@@ -325,6 +343,7 @@ public class Simulation
             if (physicalCounter < physicalAllowed)
             {
                 assignToMemory(program, programIndex, true);
+                log.logPageUnswap();
             }
             else
             {
@@ -332,6 +351,7 @@ public class Simulation
                 moveToSecondary(findOldestPhysical());
                 // add to physical
                 assignToMemory(program, programIndex, true);
+                log.logPageUnswap();
             }
         }
         catch (Exception)

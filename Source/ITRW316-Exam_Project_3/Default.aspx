@@ -107,8 +107,6 @@
                 </asp:DropDownList>
             </p>
             <p>
-                <strong>Statistics:</strong></p>
-            <p>
                 Total programs :
                 <asp:Label ID="LabelTotalPrograms" runat="server" Text="LabelTotalPrograms"></asp:Label>
             </p>
@@ -121,16 +119,14 @@
                 <asp:Label ID="LabelTotalSuccesfulPageReads" runat="server" Text="LabelTotalSuccesfulPageReads"></asp:Label>
             </p>
             <p>
-                &nbsp;Total failed page reads :
+                Total failed page reads :
                 <asp:Label ID="LabelTotalFailedPageReads" runat="server" Text="LabelTotalFailedPageReads"></asp:Label>
             </p>
             <p>
-                Total page faults :
-                <asp:Label ID="LabelTotalPageFaults" runat="server" Text="LabelTotalPageFaults"></asp:Label>
+                Total page faults : <asp:Label ID="LabelTotalPageFaults" runat="server" Text="LabelTotalPageFaults"></asp:Label>
             </p>
             <p>
-                Total page faults resolved :
-                <asp:Label ID="LabelTotalPageFaultsResolved" runat="server" Text="LabelTotalPageFaultsResolved"></asp:Label>
+                Total page faults resolved : <asp:Label ID="LabelTotalPageFaultsResolved" runat="server" Text="LabelTotalPageFaultsResolved"></asp:Label>
             </p>
             <p>
                 Total unswapped pages :

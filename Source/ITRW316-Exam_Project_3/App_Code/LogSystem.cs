@@ -94,23 +94,48 @@ public class LogSystem
     }
 
 
-    public string getLog()
+    public string getTotalPrograms()
     {
-        string log = "SESSION LOG DETAILS\n";
-        log += "\nTotal programs added: " + totalPrograms;
-        log += "\nTotal pages: " + totalPages;
-        log += "\nTotal pages swapped: " + totalSwappedPages;
-        log += "\nTotal pages unswapped: " + totalUnswappedPages;
-        log += "\nTotal pages dropped: " + totalDroppedPages;
-        log += "\nTotal page reads: " + totalPageReads;
-        log += "\nTotal succesful page reads: " + totalPageReadsSuccesful;
-        log += "\nTotal failed page reads: " + totalPageReadsFailed;
-        log += "\nTotal page faults: " + totalPageFaults;
-        log += "\nTotal page faults resolved: " + totalPageFaultsResolved;
-        log += "\nTotal TLB hits: " + totalHitsTLB;
-        log += "\nTotal TLB misses: " + totalMissesTLB;
-        //log += "\nAverage fragmentation per page: " + (totalPagesFragSize / totalPagesFragAmount);
-        log += "\n";
-        return log;
+        return totalPrograms.ToString();
+    }
+
+    public string getTotalPages()
+    {
+        return totalPages.ToString();
+    }
+
+    public string getTotalSwappedPages()
+    {
+        return totalSwappedPages.ToString();
+    }
+
+    public string getTotalUnswappedPages()
+    {
+        return totalUnswappedPages.ToString();
+    }
+    public string getTotalDroppedPages()
+    {
+        return totalDroppedPages.ToString();
+    }
+    public string getTotalPageReads()
+    {
+        return totalPageReads.ToString();
+    }
+    public string getTotalPageReadsSuccesful()
+    {
+        return totalPageReadsSuccesful.ToString();
+    }
+    public string getTotalPageReadsFailed()
+    {
+        return totalPageReadsFailed.ToString();
+    }
+
+    public string getTotalPageFaults()
+    {
+        return totalPageFaults.ToString();
+    }
+    public string getTotalPageFaultsResolved()
+    {
+        return totalPageFaultsResolved.ToString();
     }
 }
