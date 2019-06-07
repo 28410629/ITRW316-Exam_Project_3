@@ -57,22 +57,53 @@ public class Simulation
             if (program.getMemoryStatus())
             {
                 log.logSuccessfulPageRead(); // read from memory
+                // report read successful
             }
             else
             {
                 if (program.getDroppedStatus())
                 {
                     log.logFailedPageRead(); // unavailable, it was dropped in swap
+                    // report read failed, dropped
                 }
                 else
                 {
                     log.logPageFaults();
                     // run move to physical
-                    log.logPageFaultsResolved();
-                    log.logSuccessfulPageRead();
+                    if (physicalCounter < physicalAllowed)
+                    {
+                        // remove from list
+                        programs.RemoveAt(index);
+                        // set allocated to physical
+                        program.setMemoryStatus(true);
+                        // add to end of list
+                        programs.Add(program);
+                    }
+                    else
+                    {
+                        // variables 
+                        bool continuePhysicalSearch = true;
+                        bool continueSecondarySearch = true;
+                        int programIndex = 0;
+                        // search for oldest program in physical
+                        for (int i = 0; i < programs.Count; i++)
+                        {
+                            if (continuePhysicalSearch)
+                            {
+                                if (!programs.ElementAt(i).getDroppedStatus())
+                                {
+                                    if (programs.ElementAt(i).getMemoryStatus())
+                                    {
+                                        continuePhysicalSearch = false;
+                                        programIndex = i;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-          
+            runSimulation();
         }
         catch (Exception)
         {
@@ -91,22 +122,101 @@ public class Simulation
             if (physicalCounter < physicalAllowed)
             {
                 // add to physical
+                programs.Add(program);
             }
             else
             {
-                // move first in physical to secondary
-                for (int i = 0; i < programs.Count; i++)
+                // variables 
+                bool continuePhysicalSearch = true;
+
+
+                // search for oldest program in physical
+
+                // check space in secondary
+                if (secondaryCounter < secondaryAllowed)
                 {
-                    programs.ElementAt(i);
+                    // add program to secondary
+                    programs.ElementAt(programIndex).setMemoryStatus(false);
+                }
+                else
+                {
+
                 }
             }
-
-            
             // run simulation
+            runSimulation();
         }
-        else
+    }
+
+    private void moveToSecondary(int programIndex)
+    {
+        try
         {
-           // done
+
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private void moveToPhysical(int programIndex)
+    {
+        try
+        {
+
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private int findOldestSecondary()
+    {
+        try
+        {
+            int programIndex = -1;
+            // search for oldest program in secondary
+            for (int j = 0; j < programs.Count; j++)
+            {
+                if (!programs.ElementAt(j).getDroppedStatus())
+                {
+                    if (!programs.ElementAt(j).getMemoryStatus())
+                    {
+                        programIndex = j;
+                        return programIndex;
+                    }
+                }
+            }
+            return programIndex;
+        }
+        catch (Exception)
+        {
+            return -1;
+        }
+    }
+
+    private int findOldestPhysical()
+    {
+        try
+        {
+            int programIndex = -1;
+            // search for oldest program in physical
+            for (int i = 0; i < programs.Count; i++)
+            {
+                if (!programs.ElementAt(i).getDroppedStatus())
+                {
+                    if (programs.ElementAt(i).getMemoryStatus())
+                    {
+                        programIndex = i;
+                        return programIndex;
+                    }
+                }
+            }
+            return programIndex;
+        }
+        catch (Exception)
+        {
+            return -1;
         }
     }
 }
