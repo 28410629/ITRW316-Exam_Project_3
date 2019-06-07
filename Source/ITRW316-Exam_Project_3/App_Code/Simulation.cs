@@ -14,12 +14,24 @@ public class Simulation
     private int physicalCounter = 0;
     private int secondaryAllowed = 0;
     private int secondaryCounter = 0;
+    private string userReadReport = "";
 
     public Simulation(int pageCountPhysical, int pageCountSecondary)
     {
         secondaryAllowed = pageCountSecondary;
         physicalAllowed = pageCountPhysical;
         programAllowed = (int)((pageCountPhysical + pageCountSecondary) * 1.2);
+    }
+
+    public void userReadFunction(int programID)
+    {
+        readProgram(programID);
+        // report via default page function
+    }
+
+    private void setUserReadReport(string val)
+    {
+        userReadReport = val;
     }
 
     public void runSimulation()
@@ -47,60 +59,52 @@ public class Simulation
         }
     }
 
-    private void readProgram(int index)
+    private int getIndex(int programID)
+    {
+        int index = -1;
+        for (int i = 0; i < programs.Count; i++)
+        {
+            if (programs.ElementAt(i).getID() == programID)
+            {
+                index = i;
+                return index;
+            }
+        }
+        return index;
+    }
+
+    private void readProgram(int ID)
     {
         try
         {
+            int index = getIndex(ID);
             Program program = programs.ElementAt(index);
 
             // check memory if cant find it is page fault
             if (program.getMemoryStatus())
             {
-                log.logSuccessfulPageRead(); // read from memory
-                // report read successful
+                // statistics
+                log.logSuccessfulPageRead();
+                setUserReadReport("Succesfully read program from physical memory!");
             }
             else
             {
                 if (program.getDroppedStatus())
                 {
-                    log.logFailedPageRead(); // unavailable, it was dropped in swap
-                    // report read failed, dropped
+                    // statistics
+                    log.logFailedPageRead();
+                    setUserReadReport("Unsuccesfully read, program was dropped from secondary storage!");
                 }
                 else
                 {
+                    // statistics
+                    log.logPageFaultsResolved();
+                    log.logSuccessfulPageRead();
                     log.logPageFaults();
                     // run move to physical
-                    if (physicalCounter < physicalAllowed)
-                    {
-                        // remove from list
-                        programs.RemoveAt(index);
-                        // set allocated to physical
-                        program.setMemoryStatus(true);
-                        // add to end of list
-                        programs.Add(program);
-                    }
-                    else
-                    {
-                        // variables 
-                        bool continuePhysicalSearch = true;
-                        bool continueSecondarySearch = true;
-                        int programIndex = 0;
-                        // search for oldest program in physical
-                        for (int i = 0; i < programs.Count; i++)
-                        {
-                            if (continuePhysicalSearch)
-                            {
-                                if (!programs.ElementAt(i).getDroppedStatus())
-                                {
-                                    if (programs.ElementAt(i).getMemoryStatus())
-                                    {
-                                        continuePhysicalSearch = false;
-                                        programIndex = i;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    moveToPhysical(index);
+                    // report
+                    setUserReadReport("Page fault occured, resolving.\nSuccesfully read program from physical memory!");
                 }
             }
             runSimulation();
@@ -126,22 +130,10 @@ public class Simulation
             }
             else
             {
-                // variables 
-                bool continuePhysicalSearch = true;
-
-
-                // search for oldest program in physical
-
-                // check space in secondary
-                if (secondaryCounter < secondaryAllowed)
-                {
-                    // add program to secondary
-                    programs.ElementAt(programIndex).setMemoryStatus(false);
-                }
-                else
-                {
-
-                }
+                // move oldest in physical to secondary
+                moveToSecondary(findOldestPhysical());
+                // add to physical
+                programs.Add(program);
             }
             // run simulation
             runSimulation();
