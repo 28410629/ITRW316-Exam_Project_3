@@ -109,25 +109,41 @@
             <p>
                 <strong>Statistics:</strong></p>
             <p>
-                Total programs :</p>
+                Total programs :
+                <asp:Label ID="LabelTotalPrograms" runat="server" Text="LabelTotalPrograms"></asp:Label>
+            </p>
             <p>
-                Total page reads :</p>
+                Total page reads :
+                <asp:Label ID="LabelTotalPageReads" runat="server" Text="LabelTotalPageReads"></asp:Label>
+            </p>
             <p>
                 Total successful page reads :
+                <asp:Label ID="LabelTotalSuccesfulPageReads" runat="server" Text="LabelTotalSuccesfulPageReads"></asp:Label>
             </p>
             <p>
                 &nbsp;Total failed page reads :
+                <asp:Label ID="LabelTotalFailedPageReads" runat="server" Text="LabelTotalFailedPageReads"></asp:Label>
             </p>
             <p>
-                Total page faults :</p>
+                Total page faults :
+                <asp:Label ID="LabelTotalPageFaults" runat="server" Text="LabelTotalPageFaults"></asp:Label>
+            </p>
             <p>
-                Total page faults resolved :</p>
+                Total page faults resolved :
+                <asp:Label ID="LabelTotalPageFaultsResolved" runat="server" Text="LabelTotalPageFaultsResolved"></asp:Label>
+            </p>
             <p>
-                Total unswapped pages :</p>
+                Total unswapped pages :
+                <asp:Label ID="LabelTotalUnswappedPages" runat="server" Text="LabelTotalUnswappedPages"></asp:Label>
+            </p>
             <p>
-                Total swapped pages :</p>
+                Total swapped pages :
+                <asp:Label ID="LabelTotalSwappedPages" runat="server" Text="LabelTotalSwappedPages"></asp:Label>
+            </p>
             <p>
-                Total dropped pages :</p>
+                Total dropped pages :
+                <asp:Label ID="LabelTotalDroppedPages" runat="server" Text="LabelTotalDroppedPages"></asp:Label>
+            </p>
             <h2>
                 Page Search Function</h2>
             <p>

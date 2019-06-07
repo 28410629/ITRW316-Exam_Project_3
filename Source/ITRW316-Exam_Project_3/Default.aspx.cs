@@ -76,7 +76,7 @@ public partial class _Default : Page
         labelPageCountStorage.Text = pageAmountInStorage.ToString();
     }
 
-    public void setPhysicalList(List<Program> list)
+    public void setLists(List<Program> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
@@ -84,26 +84,22 @@ public partial class _Default : Page
             {
                 DropDownListProgramsPhysical.Items.Add(list.ElementAt(i).getName());
             }
-        }
-    }
-
-    public void setSecondaryList(List<Program> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
             if (!list.ElementAt(i).getMemoryStatus() && !list.ElementAt(i).getDroppedStatus())
             {
                 DropDownListProgramsSecondary.Items.Add(list.ElementAt(i).getName());
             }
+            DropDownListProgramsRead.Items.Add(list.ElementAt(i).getName());
         }
     }
 
-    public void setProgramList(List<Program> list)
+    public void setStatistics(LogSystem log)
     {
-        for (int i = 0; i < list.Count; i++)
-        {
-            DropDownListProgramsRead.Items.Add(list.ElementAt(i).getName());
-        }
+        LabelTotalPrograms.Text = log.getLog();
+    }
+
+    public void setReadStatus(string val)
+    {
+        LabelReadStatus.Text = val;
     }
 
     public void setSimulationStatus(string val, System.Drawing.Color color)
@@ -114,17 +110,23 @@ public partial class _Default : Page
 
     protected void ButtonStart_Click(object sender, EventArgs e)
     {
-        LabelSimulationStatus.Text = "Simulation is in progress, please wait.";
-        LabelSimulationStatus.ForeColor = System.Drawing.Color.Yellow;
-        simulation = new Simulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text), this);
-        simulation.runSimulation();
+        try
+        {
+            LabelSimulationStatus.Text = "Simulation is in progress, please wait.";
+            LabelSimulationStatus.ForeColor = System.Drawing.Color.Yellow;
+            simulation = new Simulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text), this);
+            simulation.runSimulation();
+        }
+        catch (Exception)
+        {
+        }
     }
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
     {
         if (simulation != null)
         {
-            simulation.userReadFunction(0);
+            simulation.userReadFunction(DropDownListProgramsRead.SelectedValue);
         }
     }
 }
@@ -148,15 +150,14 @@ public class Simulation
     {
         secondaryAllowed = pageCountSecondary;
         physicalAllowed = pageCountPhysical;
-        programAllowed = (int)((pageCountPhysical + pageCountSecondary) * 1.2);
+        programAllowed = (int)((pageCountPhysical + pageCountSecondary) * 1.2); // 20% more programs are created to simulate page drops as well
         _mainPage = main;
     }
 
-    public void userReadFunction(int programID)
+    public void userReadFunction(string programName)
     {
-        // readProgram(programID);
-        // report via default page function
-
+        readProgram(programName);
+        _mainPage.setReadStatus(userReadReport);
     }
 
     private void setUserReadReport(string val)
@@ -181,7 +182,7 @@ public class Simulation
         if (programs.Count > 0)
         {
             log.logPageRead();
-            readProgram(_random.Next(programs.Count));
+            readProgram(programs.ElementAt(_random.Next(programs.Count)).getName());
         }
         else
         {
@@ -189,12 +190,12 @@ public class Simulation
         }
     }
 
-    private int getIndex(int programID)
+    private int getIndex(string programName)
     {
         int index = -1;
         for (int i = 0; i < programs.Count; i++)
         {
-            if (programs.ElementAt(i).getID() == programID)
+            if (programs.ElementAt(i).getName() == programName)
             {
                 index = i;
                 return index;
@@ -203,11 +204,11 @@ public class Simulation
         return index;
     }
 
-    private void readProgram(int ID)
+    private void readProgram(string programName)
     {
         try
         {
-            int index = getIndex(ID);
+            int index = getIndex(programName);
             Program program = programs.ElementAt(index);
 
             // check memory if cant find it is page fault
@@ -251,12 +252,16 @@ public class Simulation
             // make program
             Program program = new Program(programCounter, "Program " + programCounter);
             programCounter++;
+            // stats
+            log.logProgramAdded();
 
             // check if physical has space
             if (physicalCounter < physicalAllowed)
             {
                 // add to physical
                 programs.Add(program);
+                // stats
+                log.logPageAdd();
             }
             else
             {
@@ -264,14 +269,16 @@ public class Simulation
                 moveToSecondary(findOldestPhysical());
                 // add to physical
                 programs.Add(program);
+                // stats
+                log.logPageAdd();
             }
             // run simulation
             runSimulation();
         }
         else
         {
-            _mainPage.setPhysicalList(programs);
-            _mainPage.setSecondaryList(programs);
+            _mainPage.setLists(programs);
+            _mainPage.setStatistics(log);
             _mainPage.setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
         }
     }
