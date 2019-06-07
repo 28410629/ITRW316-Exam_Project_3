@@ -148,11 +148,33 @@ public class Simulation
         }
     }
 
+    private void assignToMemory(Program program, int originalIndex, bool isPhysical)
+    {
+        // remove from list
+        programs.RemoveAt(originalIndex);
+        // set allocated to physical or secondary
+        program.setMemoryStatus(isPhysical);
+        // add to end of list
+        programs.Add(program);
+    }
+
     private void moveToSecondary(int programIndex)
     {
         try
         {
-
+            Program program = programs.ElementAt(programIndex);
+            // check space in secondary
+            if (secondaryCounter < secondaryAllowed)
+            {
+                assignToMemory(program, programIndex, false);
+            }
+            else
+            {
+                // drop oldest in secondary
+                programs.ElementAt(findOldestSecondary()).setDroppedStatus(true);
+                // add to secondary
+                assignToMemory(program, programIndex, false);
+            }
         }
         catch (Exception)
         {
@@ -163,7 +185,19 @@ public class Simulation
     {
         try
         {
-
+            Program program = programs.ElementAt(programIndex);
+            // check space in secondary
+            if (physicalCounter < physicalAllowed)
+            {
+                assignToMemory(program, programIndex, true);
+            }
+            else
+            {
+                // move oldest in physical to secondary
+                moveToSecondary(findOldestPhysical());
+                // add to physical
+                assignToMemory(program, programIndex, true);
+            }
         }
         catch (Exception)
         {
