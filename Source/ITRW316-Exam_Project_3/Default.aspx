@@ -54,12 +54,32 @@
                 </em>
             </p>
             <p>
+                % for simulation physical :
+                <asp:TextBox ID="textboxMemoryPercentage" runat="server"></asp:TextBox>
+            </p>
+            <p>
+                % for simulation secondary :
+                <asp:Label ID="labelStoragePercentage" runat="server" Text="..."></asp:Label>
+            </p>
+            <p>
                 <em>Reserved for Simulation : <asp:Label ID="LabelSimulationSize" runat="server" Text="..."></asp:Label>
                 </em>
             </p>
             <p>
-                <em>Estimated pages : <asp:Label ID="LabelPageCount" runat="server" Text="..."></asp:Label>
+                For memory :
+                <asp:Label ID="labelMemorySimulation" runat="server" Text="..."></asp:Label>
+            </p>
+            <p>
+                For storage :
+                <asp:Label ID="labelStorageSimulation" runat="server" Text="..."></asp:Label>
+            </p>
+            <p>
+                <em>Estimated pages in memory : <asp:Label ID="LabelPageCountMemory" runat="server" Text="..."></asp:Label>
                 </em>
+            </p>
+            <p>
+                Estimated pages in secondary storage:
+                <asp:Label ID="labelPageCountStorage" runat="server" Text="..."></asp:Label>
             </p>
             <p>
                 <asp:Button ID="ButtonCalculate" runat="server" OnClick="ButtonCalculate_Click" Text="Calculate Total Pages" />
