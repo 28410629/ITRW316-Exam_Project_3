@@ -15,16 +15,6 @@ public partial class _Default : Page
     public long userReservedSize = 0;
     public long userPageSize = 0;
 
-    public long pageAmountInMemory = 0;
-    public long pageAmountInStorage = 0;
-
-    public long userSimulationSize = 0;
-    public long reservedForMemory = 0;
-    public long reservedForStorage = 0;
-
-    public double percentageInMemory = 0.00;
-    public double percentageInStorage = 0.00;
-
     protected void Page_Load(object sender, EventArgs e)
     {
         server.getSystemInformation();
@@ -41,36 +31,11 @@ public partial class _Default : Page
         LabelOSName.Text = server.getOSCaption();  // display operating system caption
         LabelOSArchitecture.Text = server.getOSArchitecture(); // display operating system architecture.
         LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
-
-        
     }
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
     {
         userReservedSize = (Convert.ToInt64(TextBoxSizeOS.Text));
-        userPageSize = (Convert.ToInt64(TextBoxSizePage.Text));
-        userSimulationSize = (server.getFreePhysicalMemory() / 1024) - userReservedSize;
-        calculatePages();
         updateLabels();
-        
-    }
-
-    public void calculatePages()
-    {
-        percentageInMemory = Convert.ToInt64(textboxMemoryPercentage.Text);
-        percentageInStorage = 100 - percentageInMemory;
-        labelStoragePercentage.Text = percentageInStorage.ToString();
-
-        reservedForMemory = Convert.ToInt64(userSimulationSize * (percentageInMemory / 100));
-        labelMemorySimulation.Text = reservedForMemory.ToString();
-
-        reservedForStorage = userSimulationSize - reservedForMemory;
-        labelStorageSimulation.Text = reservedForStorage.ToString();
-
-        pageAmountInMemory = reservedForMemory / userPageSize;
-        LabelPageCountMemory.Text = pageAmountInMemory.ToString();
-
-        pageAmountInStorage = reservedForStorage / userPageSize;
-        labelPageCountStorage.Text = pageAmountInStorage.ToString();
     }
 }
