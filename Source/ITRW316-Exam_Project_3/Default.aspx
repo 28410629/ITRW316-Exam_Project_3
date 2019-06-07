@@ -38,48 +38,50 @@
             </p>
         </div>
         <div class="col-md-4">
-            <h2>Paging Simulation</h2>
+            <h2>Simulation Configuration</h2>
             <p>
-                <strong>Configuration</strong></p>
-            <p>
-                <em style="box-sizing: border-box; font-style: italic; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">Amount of memory to reserve for the operating system in MB :&nbsp; </em>
+                <em style="box-sizing: border-box; font-style: italic; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">Reserved memory for operating system (MB) :</em><em style="box-sizing: border-box; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">&nbsp; </em>
                 <em>
-                <asp:TextBox ID="TextBoxSizeOS" runat="server"></asp:TextBox>
+                <asp:TextBox ID="TextBoxSizeOS" runat="server" Height="24px" style="font-style: italic" Width="90px"></asp:TextBox>
                 </em>
             </p>
             <p>
-                <em style="box-sizing: border-box; font-style: italic; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">How large the page frames should be in MB : </em>
+                <em>Page frame size </em><em style="box-sizing: border-box; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">&nbsp;(MB) : </em>
                 <em>
-                <asp:TextBox ID="TextBoxSizePage" runat="server"></asp:TextBox>
+                <asp:TextBox ID="TextBoxSizePage" runat="server" style="font-style: italic" Width="89px"></asp:TextBox>
                 </em>
             </p>
             <p>
-                % for simulation physical :
-                <asp:TextBox ID="textboxMemoryPercentage" runat="server"></asp:TextBox>
-            </p>
-            <p>
-                % for simulation secondary :
-                <asp:Label ID="labelStoragePercentage" runat="server" Text="..."></asp:Label>
-            </p>
-            <p>
-                <em>Reserved for Simulation : <asp:Label ID="LabelSimulationSize" runat="server" Text="..."></asp:Label>
+                <em>Simulation allocation for physical memory (%) :
+                <asp:TextBox ID="textboxMemoryPercentage" runat="server" style="font-style: italic" Width="86px"></asp:TextBox>
                 </em>
             </p>
             <p>
-                For memory :
+                <em>Simulation allocation for secondary storage (%) : <asp:Label ID="labelStoragePercentage" runat="server" Text="..."></asp:Label>
+                </em>
+            </p>
+            <p>
+                <em>Reserved for simulation : <asp:Label ID="LabelSimulationSize" runat="server" Text="..."></asp:Label>
+                </em>
+            </p>
+            <p>
+                <em>For memory :
                 <asp:Label ID="labelMemorySimulation" runat="server" Text="..."></asp:Label>
+                </em>
             </p>
             <p>
-                For storage :
+                <em>For storage :
                 <asp:Label ID="labelStorageSimulation" runat="server" Text="..."></asp:Label>
+                </em>
             </p>
             <p>
                 <em>Estimated pages in memory : <asp:Label ID="LabelPageCountMemory" runat="server" Text="..."></asp:Label>
                 </em>
             </p>
             <p>
-                Estimated pages in secondary storage:
+                <em>Estimated pages in secondary storage:
                 <asp:Label ID="labelPageCountStorage" runat="server" Text="..."></asp:Label>
+                </em>
             </p>
             <p>
                 <asp:Button ID="ButtonCalculate" runat="server" OnClick="ButtonCalculate_Click" Text="Calculate Total Pages" />
@@ -87,31 +89,34 @@
             <p>
                 <asp:Button ID="ButtonStart" runat="server" Text=" Start Simulation" />
             </p>
-            <p>
-                &nbsp;</p>
-            <p>
-                <strong>Results</strong></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Simulation Results</h2>
             <p>
                 Simulation status :
-                <asp:Label ID="LabelSimulationStatus" runat="server" Text="..."></asp:Label>
+                <asp:Label ID="LabelSimulationStatus" runat="server" Text="Not Runned" ForeColor="#FF3300"></asp:Label>
             </p>
             <p>
-                List of program in <strong>physical memory</strong>:
+                List of programs in <strong>physical memory</strong>:
                 <asp:DropDownList ID="DropDownListProgramsPhysical" runat="server">
                 </asp:DropDownList>
             </p>
             <p>
-                List of program in <strong>secondary storage</strong>:
+                List of programs in <strong>secondary storage</strong>:
                 <asp:DropDownList ID="DropDownListProgramsSecondary" runat="server">
                 </asp:DropDownList>
             </p>
-        </div>
-        <div class="col-md-4">
-            <h2>Page Search</h2>
+            <p>
+                &nbsp;</p>
+            <h2>
+                Page Search Function</h2>
             <p>
                 P<span style="box-sizing: border-box; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">age to search for :&nbsp; </span>
                 <asp:DropDownList ID="DropDownListProgramsRead" runat="server">
                 </asp:DropDownList>
+            </p>
+            <p>
+                <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" />
             </p>
             <p>
                 Page status: <asp:Label ID="LabelReadStatus" runat="server" Text="..."></asp:Label>
