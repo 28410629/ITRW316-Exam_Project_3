@@ -87,7 +87,7 @@
                 <asp:Button ID="ButtonCalculate" runat="server" OnClick="ButtonCalculate_Click" Text="Calculate Total Pages" />
             </p>
             <p>
-                <asp:Button ID="ButtonStart" runat="server" Text=" Start Simulation" />
+                <asp:Button ID="ButtonStart" runat="server" Text=" Start Simulation" OnClick="ButtonStart_Click" />
             </p>
         </div>
         <div class="col-md-4">
@@ -116,7 +116,7 @@
                 </asp:DropDownList>
             </p>
             <p>
-                <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" />
+                <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" OnClick="ButtonSearchPage_Click" />
             </p>
             <p>
                 Page status: <asp:Label ID="LabelReadStatus" runat="server" Text="..."></asp:Label>
