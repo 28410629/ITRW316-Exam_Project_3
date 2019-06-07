@@ -3,59 +3,78 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="jumbotron">
-        <h1>ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-        <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-    </div>
-
-    <div class="jumbotron">
-        <h1>Server Information</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-        <p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+        <h2>ITRW316 - Exam Project 3</h2>
+        <p class="lead" style="font-size: 13pt"><em>Coenraad Human (28410629), Eon Viljoen (28807995) and Morne Venter (28634748)</em></p>
+        <p><a href="https://github.com/coenraadhuman/ITRW316-Exam_Project_3" class="btn btn-primary btn-lg">Github Repository &raquo;</a></p>
     </div>
 
     <div class="row">
         <div class="col-md-4">
             <h2>Details and Configuration</h2>
-            <p>
-                <strong>System details</strong></p>
-            <p>
-                System memory availible :
-                <asp:Label ID="LabelSystemMemory" runat="server" Text="..."></asp:Label>
+            <p>Operating system name :
+                <asp:Label ID="LabelOSName" runat="server" Text="..."></asp:Label>
             </p>
-            <p>
-                Reserved for OS :
-                <asp:Label ID="LabelOSSize" runat="server" Text="..."></asp:Label>
+            <p>Operating system architecture :
+                <asp:Label ID="LabelOSArchitecture" runat="server" Text="..."></asp:Label>
             </p>
-            <p>
-                Reserved for Simulation : <asp:Label ID="LabelSimulationSize" runat="server" Text="..."></asp:Label>
+            <p>Operating system version :
+                <asp:Label ID="LabelOSVersion" runat="server" Text="..."></asp:Label>
             </p>
+            <p style="font-size: small">
+                Physical memory available :
+                <asp:Label ID="LabelPhysicalMemory" runat="server" Text="..."></asp:Label>
+            </p>
+            <p style="font-size: small">
+                Total physical memory available :
+                <asp:Label ID="LabelPhysicalMemoryTotal" runat="server" Text="..."></asp:Label>
+            </p>
+            <p style="font-size: small">
+                Virtual memory available :
+                <asp:Label ID="LabelVirtualMemory" runat="server" Text="..."></asp:Label>
+            </p>
+            <p style="font-size: small">
+                Total virtual memory available :
+                <asp:Label ID="LabelVirtualMemoryTotal" runat="server" Text="..."></asp:Label>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>Paging Simulation</h2>
             <p>
                 <strong>Configuration</strong></p>
             <p>
                 <em style="box-sizing: border-box; font-style: italic; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">Amount of memory to reserve for the operating system :&nbsp; </em>
-                <asp:TextBox ID="TextBoxSizeOS" runat="server" OnTextChanged="TextBoxSizeOS_TextChanged"></asp:TextBox>
+                <em>
+                <asp:TextBox ID="TextBoxSizeOS" runat="server"></asp:TextBox>
+                </em>
             </p>
             <p>
                 <em style="box-sizing: border-box; font-style: italic; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">How large the page frames should be : </em>
+                <em>
                 <asp:TextBox ID="TextBoxSizePage" runat="server"></asp:TextBox>
+                </em>
             </p>
             <p>
-                <em>Secondary storage size : </em>
-                <asp:TextBox ID="TextBoxSizeSecondary" runat="server"></asp:TextBox>
+                <em>Reserved for Simulation : <asp:Label ID="LabelSimulationSize" runat="server" Text="..."></asp:Label>
+                </em>
             </p>
             <p>
-                Estimated pages : <asp:Label ID="LabelPageCount" runat="server" Text="..."></asp:Label>
+                <em>Estimated pages : <asp:Label ID="LabelPageCount" runat="server" Text="..."></asp:Label>
+                </em>
             </p>
             <p>
-                <asp:Button ID="ButtonCalculate" runat="server" OnClick="ButtonCalculate_Click" Text="Calculate Values" />
+                <asp:Button ID="ButtonCalculate" runat="server" OnClick="ButtonCalculate_Click" Text="Calculate Total Pages" />
             </p>
             <p>
                 <asp:Button ID="ButtonStart" runat="server" Text=" Start Simulation" />
-&nbsp;</p>
-        </div>
-        <div class="col-md-4">
-            <h2>Paging Simulation</h2>
+            </p>
+            <p>
+                &nbsp;</p>
+            <p>
+                <strong>Results</strong></p>
+            <p>
+                Simulation status :
+                <asp:Label ID="LabelSimulationStatus" runat="server" Text="..."></asp:Label>
+            </p>
             <p>
                 List of program in <strong>physical memory</strong>:
                 <asp:DropDownList ID="DropDownListProgramsPhysical" runat="server">

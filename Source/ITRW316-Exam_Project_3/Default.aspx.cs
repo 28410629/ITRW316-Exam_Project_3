@@ -9,18 +9,37 @@ using System.Management;   //This namespace is used to work with WMI classes. Fo
 
 public partial class _Default : Page
 {
-    // raw values are in KB
-    public long freePhysicalMemory = 0; 
-    public long freeVirtualMemory = 0;
-    public long totalVisibleMemorySize = 0;
-    public long totalVirtualMemorySize = 0;
+    // system values
+    public long freePhysicalMemory = 0; // KB
+    public long freeVirtualMemory = 0; // KB
+    public long totalVisibleMemorySize = 0; // KB
+    public long totalVirtualMemorySize = 0; // KB
+    public string caption = "";  // display operating system caption
+    public string osArchitecture = ""; // display operating system architecture.
+    public string csdVersion = ""; // display operating system version. 
+
+    // results from
+    ManagementObjectCollection results = null;
+
+    // user input values
+    public long SizeOS = 6;
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        getSystemInformation();
+        assignRawValues();
+        updateLabels();
+    }
+
+    public void getSystemInformation()
+    {
         ObjectQuery wql = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
         ManagementObjectSearcher searcher = new ManagementObjectSearcher(wql);
-        ManagementObjectCollection results = searcher.Get();
+        results = searcher.Get();
+    }
 
+    public void assignRawValues()
+    {
         foreach (ManagementObject result in results)
         {
             // physical memory details
@@ -30,24 +49,28 @@ public partial class _Default : Page
             // virtual memory details
             freeVirtualMemory = Convert.ToInt64(result["FreeVirtualMemory"]);
             totalVirtualMemorySize = Convert.ToInt64(result["TotalVirtualMemorySize"]);
-            
-            // assign values to labels
-            LabelSystemMemory.Text = (freePhysicalMemory / 1024).ToString() + " MB";
+
+            // other system details
+            caption = result["Caption"].ToString(); // os name
+            osArchitecture = result["OSArchitecture"].ToString(); // os architecture
+            //csdVersion = result["CSDVersion"].ToString(); // os version
         }
-    }
-
-    public long SizeOS = 6;
-
-    protected void TextBoxSizeOS_TextChanged(object sender, EventArgs e)
-    {
-        
-        
     }
 
     public void updateLabels()
     {
-        LabelOSSize.Text = SizeOS.ToString();
+        // assign values to labels
+        //LabelOSSize.Text = SizeOS.ToString(); // changing this
+
+        LabelPhysicalMemory.Text = (freePhysicalMemory / 1024).ToString() + " MB";
+        LabelPhysicalMemoryTotal.Text = (totalVisibleMemorySize / 1024).ToString() + " MB" ; 
+        LabelVirtualMemory.Text = (freeVirtualMemory / 1024).ToString() + " MB";
+        LabelVirtualMemoryTotal.Text = (totalVirtualMemorySize / 1024).ToString() + " MB";
+        LabelOSName.Text = caption;  // display operating system caption
+        LabelOSArchitecture.Text = osArchitecture; // display operating system architecture.
+        LabelOSVersion.Text = csdVersion; // display operating system version. 
         LabelSimulationSize.Text = ((freePhysicalMemory / 1024) - (SizeOS)).ToString();
+        
     }
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
@@ -56,30 +79,6 @@ public partial class _Default : Page
         updateLabels();
     }
 }
-
-//public class SystemInfo
-//{
-//    public void getOperatingSystemInfo()
-//    {
-//        Console.WriteLine("Displaying operating system info....\n");
-//        //Create an object of ManagementObjectSearcher class and pass query as parameter.
-//        ManagementObjectSearcher mos = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
-//        foreach (ManagementObject managementObject in mos.Get())
-//        {
-//            if (managementObject["Caption"] != null)
-//            {
-//                Console.WriteLine("Operating System Name  :  " + managementObject["Caption"].ToString());   //Display operating system caption
-//            }
-//            if (managementObject["OSArchitecture"] != null)
-//            {
-//                Console.WriteLine("Operating System Architecture  :  " + managementObject["OSArchitecture"].ToString());   //Display operating system architecture.
-//            }
-//            if (managementObject["CSDVersion"] != null)
-//            {
-//                Console.WriteLine("Operating System Service Pack   :  " + managementObject["CSDVersion"].ToString());     //Display operating system version.
-//            }
-//        }
-//    }
 
 //    public void getProcessorInfo()
 //    {

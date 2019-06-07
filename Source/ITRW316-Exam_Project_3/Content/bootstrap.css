@@ -1288,6 +1288,7 @@ h6,
 }
 p {
   margin: 0 0 10px;
+    font-size: small;
 }
 .lead {
   margin-bottom: 20px;
@@ -5046,9 +5047,8 @@ a.badge:focus {
 }
 .jumbotron p {
   margin-bottom: 15px;
-  font-size: 21px;
-  font-weight: 200;
-}
+  font-size: small;
+  }
 .jumbotron > hr {
   border-top-color: #d5d5d5;
 }
