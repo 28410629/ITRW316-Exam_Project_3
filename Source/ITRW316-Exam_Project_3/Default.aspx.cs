@@ -24,13 +24,13 @@ public partial class _Default : Page
 
     public void updateLabels()
     {
-        LabelPhysicalMemory.Text = (freePhysicalMemory / 1024).ToString() + " MB";
-        LabelPhysicalMemoryTotal.Text = (totalVisibleMemorySize / 1024).ToString() + " MB" ; 
-        LabelVirtualMemory.Text = (freeVirtualMemory / 1024).ToString() + " MB";
-        LabelVirtualMemoryTotal.Text = (totalVirtualMemorySize / 1024).ToString() + " MB";
-        LabelOSName.Text = caption;  // display operating system caption
-        LabelOSArchitecture.Text = osArchitecture; // display operating system architecture.
-        LabelSimulationSize.Text = ((freePhysicalMemory / 1024) - (userReservedSize)).ToString() + " MB";
+        LabelPhysicalMemory.Text = (server.getFreePhysicalMemory() / 1024).ToString() + " MB";
+        LabelPhysicalMemoryTotal.Text = (server.getTotalVisibleMemorySize() / 1024).ToString() + " MB" ; 
+        LabelVirtualMemory.Text = (server.getFreeVirtualMemory() / 1024).ToString() + " MB";
+        LabelVirtualMemoryTotal.Text = (server.getTotalVirtualMemorySize() / 1024).ToString() + " MB";
+        LabelOSName.Text = server.getOSCaption();  // display operating system caption
+        LabelOSArchitecture.Text = server.getOSArchitecture(); // display operating system architecture.
+        LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
     }
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)

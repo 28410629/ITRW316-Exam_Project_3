@@ -4,9 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Management;
 
-/// <summary>
-/// Summary description for ServerDetails
-/// </summary>
 public class ServerDetails
 {
     // system values
@@ -22,7 +19,37 @@ public class ServerDetails
     public ServerDetails()
     {
     }
-    
+
+    public long getFreePhysicalMemory()
+    {
+        return freePhysicalMemory;
+    }
+
+    public long getFreeVirtualMemory()
+    {
+        return freeVirtualMemory;
+    }
+
+    public long getTotalVisibleMemorySize()
+    {
+        return totalVisibleMemorySize;
+    }
+
+    public long getTotalVirtualMemorySize()
+    {
+        return totalVirtualMemorySize;
+    }
+
+    public string getOSCaption()
+    {
+        return caption;
+    }
+
+    public string getOSArchitecture()
+    {
+        return osArchitecture;
+    }
+
     public void getSystemInformation()
     {
         ObjectQuery wql = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
