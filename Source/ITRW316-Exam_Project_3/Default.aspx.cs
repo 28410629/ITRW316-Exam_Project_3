@@ -16,13 +16,13 @@ public partial class _Default : Page
     public long totalVirtualMemorySize = 0; // KB
     public string caption = "";  // display operating system caption
     public string osArchitecture = ""; // display operating system architecture.
-    public string csdVersion = ""; // display operating system version. 
 
     // results from
     ManagementObjectCollection results = null;
 
     // user input values
-    public long SizeOS = 6;
+    public long userReservedSize = 0;
+    public long userPageSize = 0;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -53,44 +53,23 @@ public partial class _Default : Page
             // other system details
             caption = result["Caption"].ToString(); // os name
             osArchitecture = result["OSArchitecture"].ToString(); // os architecture
-            //csdVersion = result["CSDVersion"].ToString(); // os version
         }
     }
 
     public void updateLabels()
     {
-        // assign values to labels
-        //LabelOSSize.Text = SizeOS.ToString(); // changing this
-
         LabelPhysicalMemory.Text = (freePhysicalMemory / 1024).ToString() + " MB";
         LabelPhysicalMemoryTotal.Text = (totalVisibleMemorySize / 1024).ToString() + " MB" ; 
         LabelVirtualMemory.Text = (freeVirtualMemory / 1024).ToString() + " MB";
         LabelVirtualMemoryTotal.Text = (totalVirtualMemorySize / 1024).ToString() + " MB";
         LabelOSName.Text = caption;  // display operating system caption
         LabelOSArchitecture.Text = osArchitecture; // display operating system architecture.
-        LabelOSVersion.Text = csdVersion; // display operating system version. 
-        LabelSimulationSize.Text = ((freePhysicalMemory / 1024) - (SizeOS)).ToString();
-        
+        LabelSimulationSize.Text = ((freePhysicalMemory / 1024) - (userReservedSize)).ToString() + " MB";
     }
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
     {
-        SizeOS = (Convert.ToInt64(TextBoxSizeOS.Text));
+        userReservedSize = (Convert.ToInt64(TextBoxSizeOS.Text));
         updateLabels();
     }
 }
-
-//    public void getProcessorInfo()
-//    {
-//        Console.WriteLine("\n\nDisplaying Processor Name....");
-//        RegistryKey processor_name = Registry.LocalMachine.OpenSubKey(@"Hardware\Description\System\CentralProcessor\0", RegistryKeyPermissionCheck.ReadSubTree);   //This registry entry contains entry for processor info.
-
-//        if (processor_name != null)
-//        {
-//            if (processor_name.GetValue("ProcessorNameString") != null)
-//            {
-//                Console.WriteLine(processor_name.GetValue("ProcessorNameString"));   //Display processor ingo.
-//            }
-//        }
-//    }
-//}
