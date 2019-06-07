@@ -14,6 +14,8 @@ public partial class _Default : Page
     // user input values
     public long userReservedSize = 0;
     public long userPageSize = 0;
+    public long pageAmount = 0;
+    public long userSimulationSize = 0;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -31,11 +33,22 @@ public partial class _Default : Page
         LabelOSName.Text = server.getOSCaption();  // display operating system caption
         LabelOSArchitecture.Text = server.getOSArchitecture(); // display operating system architecture.
         LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
+
+        
     }
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
     {
         userReservedSize = (Convert.ToInt64(TextBoxSizeOS.Text));
+        userPageSize = (Convert.ToInt64(TextBoxSizePage.Text));
+        userSimulationSize = (server.getFreePhysicalMemory() / 1024) - userReservedSize;
         updateLabels();
+        calculatePages();
+    }
+
+    public void calculatePages()
+    {
+        pageAmount = userSimulationSize / userPageSize;
+        LabelPageCount.Text = pageAmount.ToString();
     }
 }

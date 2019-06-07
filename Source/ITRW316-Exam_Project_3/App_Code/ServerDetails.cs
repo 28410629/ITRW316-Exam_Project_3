@@ -13,6 +13,8 @@ public class ServerDetails
     public long totalVirtualMemorySize = 0; // KB
     public string caption = "";  // display operating system caption
     public string osArchitecture = ""; // display operating system architecture.
+    
+    
 
     // results from
     ManagementObjectCollection results = null;
