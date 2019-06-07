@@ -26,7 +26,6 @@ public partial class _Default : Page
     public double percentageInStorage = 0.00;
 
     private Simulation simulation;
-    public Simulation sim;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -44,8 +43,6 @@ public partial class _Default : Page
         LabelOSName.Text = server.getOSCaption();  // display operating system caption
         LabelOSArchitecture.Text = server.getOSArchitecture(); // display operating system architecture.
         LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
-
-        
     }
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
@@ -113,7 +110,7 @@ public partial class _Default : Page
 
     public void setSimulation(Simulation sim)
     {
-        this.sim = sim;
+        simulation = sim;
     }
 
     public void setSimulationStatus(string val, System.Drawing.Color color)
@@ -130,6 +127,7 @@ public partial class _Default : Page
             LabelSimulationStatus.ForeColor = System.Drawing.Color.Yellow;
             simulation = new Simulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text), this);
             simulation.runSimulation();
+           
         }
         catch (Exception)
         {
@@ -138,7 +136,9 @@ public partial class _Default : Page
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
     {
-        sim.userReadFunction(DropDownListProgramsRead.SelectedValue);
+        simulation = (Simulation)Session["test"];
+        // read serialised data from app_data
+        simulation.userReadFunction(DropDownListProgramsRead.SelectedValue);
     }
 }
 
@@ -163,6 +163,11 @@ public class Simulation
         physicalAllowed = pageCountPhysical;
         programAllowed = (int)((pageCountPhysical + pageCountSecondary) * 1.2); // 20% more programs are created to simulate page drops as well
         _mainPage = main;
+    }
+
+    public void setProgramsList(List<Program> program)
+    {
+        programs = program;
     }
 
     public void userReadFunction(string programName)
@@ -293,7 +298,7 @@ public class Simulation
             _mainPage.setLists(programs);
             _mainPage.setStatistics(log);
             _mainPage.setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
-            _mainPage.setSimulation(this);
+            //Session["test"] = simulation;
         }
     }
 
