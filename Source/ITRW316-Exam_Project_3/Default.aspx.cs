@@ -78,12 +78,46 @@ public partial class _Default : Page
 
     public void setPhysicalList(List<Program> list)
     {
-        LabelSimulationStatus.Text = "It works!!!!";
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list.ElementAt(i).getMemoryStatus() && !list.ElementAt(i).getDroppedStatus())
+            {
+                DropDownListProgramsPhysical.Items.Add(list.ElementAt(i).getName());
+            }
+        }
+    }
+
+    public void setSecondaryList(List<Program> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (!list.ElementAt(i).getMemoryStatus() && !list.ElementAt(i).getDroppedStatus())
+            {
+                DropDownListProgramsSecondary.Items.Add(list.ElementAt(i).getName());
+            }
+        }
+    }
+
+    public void setProgramList(List<Program> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            DropDownListProgramsRead.Items.Add(list.ElementAt(i).getName());
+        }
+    }
+
+    public void setSimulationStatus(string val, System.Drawing.Color color)
+    {
+        LabelSimulationStatus.Text = val;
+        LabelSimulationStatus.ForeColor = color;
     }
 
     protected void ButtonStart_Click(object sender, EventArgs e)
     {
-        simulation = new Simulation((int)(reservedForMemory / userPageSize),(int)(reservedForStorage / userPageSize), this);
+        LabelSimulationStatus.Text = "Simulation is in progress, please wait.";
+        LabelSimulationStatus.ForeColor = System.Drawing.Color.Yellow;
+        simulation = new Simulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text), this);
+        simulation.runSimulation();
     }
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
@@ -122,7 +156,6 @@ public class Simulation
     {
         // readProgram(programID);
         // report via default page function
-        _mainPage.setPhysicalList(programs);
 
     }
 
@@ -234,6 +267,12 @@ public class Simulation
             }
             // run simulation
             runSimulation();
+        }
+        else
+        {
+            _mainPage.setPhysicalList(programs);
+            _mainPage.setSecondaryList(programs);
+            _mainPage.setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
         }
     }
 

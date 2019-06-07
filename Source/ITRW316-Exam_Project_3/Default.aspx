@@ -65,17 +65,17 @@
                 </em>
             </p>
             <p>
-                <em>For memory :
+                <em>Reserved for physical memory&nbsp; :
                 <asp:Label ID="labelMemorySimulation" runat="server" Text="..."></asp:Label>
                 </em>
             </p>
             <p>
-                <em>For storage :
+                <em>Reserved for secondary storage :
                 <asp:Label ID="labelStorageSimulation" runat="server" Text="..."></asp:Label>
                 </em>
             </p>
             <p>
-                <em>Estimated pages in memory : <asp:Label ID="LabelPageCountMemory" runat="server" Text="..."></asp:Label>
+                <em>Estimated pages in physical memory : <asp:Label ID="LabelPageCountMemory" runat="server" Text="..."></asp:Label>
                 </em>
             </p>
             <p>
@@ -107,7 +107,27 @@
                 </asp:DropDownList>
             </p>
             <p>
-                &nbsp;</p>
+                <strong>Statistics:</strong></p>
+            <p>
+                Total programs :</p>
+            <p>
+                Total page reads :</p>
+            <p>
+                Total successful page reads :
+            </p>
+            <p>
+                &nbsp;Total failed page reads :
+            </p>
+            <p>
+                Total page faults :</p>
+            <p>
+                Total page faults resolved :</p>
+            <p>
+                Total unswapped pages :</p>
+            <p>
+                Total swapped pages :</p>
+            <p>
+                Total dropped pages :</p>
             <h2>
                 Page Search Function</h2>
             <p>
