@@ -89,9 +89,15 @@ public partial class _Default : Page
 
     public void setLists(List<string[]> list)
     {
+        DropDownListProgramsPhysical.Items.Clear();
+        DropDownListProgramsSecondary.Items.Clear();
+        DropDownListProgramsRead.Items.Clear();
+
         int counterP = 0;
         int counterS = 0;
+
         list.Sort((x, y) => (Convert.ToInt32(x[0])).CompareTo(Convert.ToInt32(y[0])));
+
         for (int i = 0; i < list.Count; i++)
         {
             if (list.ElementAt(i)[2] == "T" && list.ElementAt(i)[3] == "F")
@@ -228,7 +234,7 @@ public partial class _Default : Page
             {
                 // statistics
                 log.logSuccessfulPageRead();
-                setUserReadReport("Succesfully read program from physical memory!");
+                setUserReadReport("Succesfully read page from physical memory!");
             }
             else
             {
@@ -238,7 +244,7 @@ public partial class _Default : Page
                 {
                     // statistics
                     log.logFailedPageRead();
-                    setUserReadReport("Unsuccesfully read, program was dropped from secondary storage!");
+                    setUserReadReport("Unsuccesfully read, page was dropped from secondary storage!");
                 }
                 else
                 {
@@ -248,7 +254,7 @@ public partial class _Default : Page
                     // run move to physical
                     moveToPhysical(index);
                     // report
-                    setUserReadReport("Page fault occured, resolving.\nSuccesfully read program from physical memory!");
+                    setUserReadReport("Page fault occured, resolving.\nSuccesfully read page from physical memory!");
                 }
             }
             runSimulation();
@@ -267,7 +273,7 @@ public partial class _Default : Page
             {
                 string[] program = new string[4];
                 program[0] = programCounter.ToString();
-                program[1] = "Program " + programCounter;
+                program[1] = "Page " + programCounter;
                 program[2] = "T";
                 program[3] = "F";
                 // stats

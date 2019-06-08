@@ -34,7 +34,9 @@
    
     <div class="jumbotron">
         <h2>ITRW316 - Exam Project 3</h2>
-        <p class="lead" style="font-size: 13pt"><em>Coenraad Human (28410629), Eon Viljoen (28807995) and Morne Venter (28634748)</em></p>
+        <p class="lead" style="font-size: 13pt">Coenraad Human (28410629)</p>
+        <p class="lead" style="font-size: 13pt">Eon Viljoen (28807995)</p>
+        <p class="lead" style="font-size: 13pt">Morne Venter (28634748)</p>
         <p><a href="https://github.com/coenraadhuman/ITRW316-Exam_Project_3" class="btn btn-primary btn-lg">Private Github Repository &raquo;</a></p>
     </div>
     <div class ="mycontainer">
@@ -133,56 +135,58 @@
         <div class="block">
             <h2>Simulation Results</h2>
             <p>
-                Simulation status :
-                <asp:Label ID="LabelSimulationStatus" runat="server" Text="Not Runned" ForeColor="#FF3300"></asp:Label>
+                <strong>Simulation Status:</strong>
+                <asp:Label ID="LabelSimulationStatus" runat="server" Text="Inactive" ForeColor="#FF3300"></asp:Label>
             </p>
             <p>
-                List of programs 
+                <strong>Pages</strong> <strong> 
                 <asp:Label ID="LabelListInPhysical" runat="server" Text="... "></asp:Label>
-                in <strong>physical memory</strong>:
+                in memory</strong>:
                 <asp:DropDownList ID="DropDownListProgramsPhysical" runat="server">
                 </asp:DropDownList>
             </p>
             <p>
-                List of programs 
+                <strong>Pages</strong> <strong> 
                 <asp:Label ID="LabelListInSecondary" runat="server" Text="... "></asp:Label>
-                in <strong>secondary storage</strong>:
+                </strong>i<strong>n</strong> <strong>storage</strong>:
                 <asp:DropDownList ID="DropDownListProgramsSecondary" runat="server">
                 </asp:DropDownList>
             </p>
             <p>
-                Total programs :
-                <asp:Label ID="LabelTotalPrograms" runat="server" Text="LabelTotalPrograms"></asp:Label>
+                <strong>Total Pages:</strong>
+                <asp:Label ID="LabelTotalPrograms" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total page reads :
-                <asp:Label ID="LabelTotalPageReads" runat="server" Text="LabelTotalPageReads"></asp:Label>
+                <strong>Total Page Reads </strong>:
+                <asp:Label ID="LabelTotalPageReads" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total successful page reads :
-                <asp:Label ID="LabelTotalSuccesfulPageReads" runat="server" Text="LabelTotalSuccesfulPageReads"></asp:Label>
+                <strong>Total Successful Page Reads:</strong>
+                <asp:Label ID="LabelTotalSuccesfulPageReads" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total failed page reads :
-                <asp:Label ID="LabelTotalFailedPageReads" runat="server" Text="LabelTotalFailedPageReads"></asp:Label>
+                <strong>Total Failed Page Reads:</strong>
+                <asp:Label ID="LabelTotalFailedPageReads" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total page faults : <asp:Label ID="LabelTotalPageFaults" runat="server" Text="LabelTotalPageFaults"></asp:Label>
+                <strong>Total Page Faults:</strong>
+                <asp:Label ID="LabelTotalPageFaults" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total page faults resolved : <asp:Label ID="LabelTotalPageFaultsResolved" runat="server" Text="LabelTotalPageFaultsResolved"></asp:Label>
+                <strong>Total Page Faults Resolved:</strong>
+                <asp:Label ID="LabelTotalPageFaultsResolved" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total unswapped pages :
-                <asp:Label ID="LabelTotalUnswappedPages" runat="server" Text="LabelTotalUnswappedPages"></asp:Label>
+                <strong>Total Unswapped Pages:</strong>
+                <asp:Label ID="LabelTotalUnswappedPages" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total swapped pages :
-                <asp:Label ID="LabelTotalSwappedPages" runat="server" Text="LabelTotalSwappedPages"></asp:Label>
+                <strong>Total Swapped Pages:</strong>
+                <asp:Label ID="LabelTotalSwappedPages" runat="server" Text="..."></asp:Label>
             </p>
             <p>
-                Total dropped pages :
-                <asp:Label ID="LabelTotalDroppedPages" runat="server" Text="LabelTotalDroppedPages"></asp:Label>
+                <strong>Total Dropped Pages:</strong>
+                <asp:Label ID="LabelTotalDroppedPages" runat="server" Text="..."></asp:Label>
             </p>
             </div>
 
@@ -190,15 +194,15 @@
             <h2>
                 Page Search Function</h2>
             <p>
-                P<span style="box-sizing: border-box; color: rgb(33, 33, 33); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 14px; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">age to search for :&nbsp; </span>
-                <asp:DropDownList ID="DropDownListProgramsRead" runat="server">
+                <strong>Page Search:</strong>
+                <asp:DropDownList ID="DropDownListProgramsRead" runat="server" Height="40px" Width="153px">
                 </asp:DropDownList>
             </p>
             <p>
-                <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" OnClick="ButtonSearchPage_Click" />
+                <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" OnClick="ButtonSearchPage_Click" BorderColor="#0066FF" BorderStyle="Groove" BorderWidth="2px" CssClass="btn active" />
             </p>
             <p>
-                Page status: <asp:Label ID="LabelReadStatus" runat="server" Text="..."></asp:Label>
+                <strong>Page Status:</strong> <asp:Label ID="LabelReadStatus" runat="server" Text="..."></asp:Label>
             </p>
         </div>
         </div>
