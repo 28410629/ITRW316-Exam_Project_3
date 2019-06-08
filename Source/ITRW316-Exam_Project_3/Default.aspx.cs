@@ -4,28 +4,34 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Diagnostics;
-using System.Management;   //This namespace is used to work with WMI classes. For using this namespace add reference of System.Management.dll .
 
 public partial class _Default : Page
 {
+    // server details variables
     ServerDetails server = new ServerDetails();
+
+    // simulation variables
+    private List<Program> programs = new List<Program>();
+    private LogSystem log = new LogSystem();
+    private Random _random = new Random();
+    private int programAllowed = 0;
+    private int programCounter = 0;
+    private int physicalAllowed = 0;
+    private int physicalCounter = 0;
+    private int secondaryAllowed = 0;
+    private int secondaryCounter = 0;
+    private string userReadReport = "";
 
     // user input values
     public long userReservedSize = 0;
     public long userPageSize = 0;
-
     public long pageAmountInMemory = 0;
     public long pageAmountInStorage = 0;
-
     public long userSimulationSize = 0;
     public long reservedForMemory = 0;
     public long reservedForStorage = 0;
-
     public double percentageInMemory = 0.00;
     public double percentageInStorage = 0.00;
-
-    private Simulation simulation;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -34,7 +40,7 @@ public partial class _Default : Page
         updateLabels();
     }
 
-    public void updateLabels()
+    public void updateLabels() // server details
     {
         LabelPhysicalMemory.Text = (server.getFreePhysicalMemory() / 1024).ToString() + " MB";
         LabelPhysicalMemoryTotal.Text = (server.getTotalVisibleMemorySize() / 1024).ToString() + " MB" ; 
@@ -42,7 +48,6 @@ public partial class _Default : Page
         LabelVirtualMemoryTotal.Text = (server.getTotalVirtualMemorySize() / 1024).ToString() + " MB";
         LabelOSName.Text = server.getOSCaption();  // display operating system caption
         LabelOSArchitecture.Text = server.getOSArchitecture(); // display operating system architecture.
-        LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
     }
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
@@ -52,7 +57,6 @@ public partial class _Default : Page
         userSimulationSize = (server.getFreePhysicalMemory() / 1024) - userReservedSize;
         calculatePages();
         updateLabels();
-        
     }
 
     public void calculatePages()
@@ -72,6 +76,8 @@ public partial class _Default : Page
 
         pageAmountInStorage = reservedForStorage / userPageSize;
         labelPageCountStorage.Text = pageAmountInStorage.ToString();
+
+        LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
     }
 
     public void setLists(List<Program> list)
@@ -108,11 +114,6 @@ public partial class _Default : Page
         LabelReadStatus.Text = val;
     }
 
-    public void setSimulation(Simulation sim)
-    {
-        simulation = sim;
-    }
-
     public void setSimulationStatus(string val, System.Drawing.Color color)
     {
         LabelSimulationStatus.Text = val;
@@ -125,8 +126,8 @@ public partial class _Default : Page
         {
             LabelSimulationStatus.Text = "Simulation is in progress, please wait.";
             LabelSimulationStatus.ForeColor = System.Drawing.Color.Yellow;
-            simulation = new Simulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text), this);
-            simulation.runSimulation();
+            setSimulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text));
+            runSimulation();
            
         }
         catch (Exception)
@@ -136,33 +137,19 @@ public partial class _Default : Page
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
     {
-        simulation = (Simulation)Session["test"];
+        programs = (List<Program>)Session["programList"];
+        log = (LogSystem)Session["logObject"];
         // read serialised data from app_data
-        simulation.userReadFunction(DropDownListProgramsRead.SelectedValue);
+        userReadFunction(DropDownListProgramsRead.SelectedValue);
     }
-}
 
-public class Simulation
-{
-    private List<Program> programs = new List<Program>();
-    private LogSystem log = new LogSystem();
-    private Random _random = new Random();
-    private int programAllowed = 0;
-    private int programCounter = 0;
-    private int physicalAllowed = 0;
-    private int physicalCounter = 0;
-    private int secondaryAllowed = 0;
-    private int secondaryCounter = 0;
-    private string userReadReport = "";
+    
 
-    _Default _mainPage;
-
-    public Simulation(int pageCountPhysical, int pageCountSecondary, _Default main)
+    public void setSimulation(int pageCountPhysical, int pageCountSecondary)
     {
         secondaryAllowed = pageCountSecondary;
         physicalAllowed = pageCountPhysical;
         programAllowed = (int)((pageCountPhysical + pageCountSecondary) * 1.2); // 20% more programs are created to simulate page drops as well
-        _mainPage = main;
     }
 
     public void setProgramsList(List<Program> program)
@@ -173,7 +160,7 @@ public class Simulation
     public void userReadFunction(string programName)
     {
         readProgram(programName);
-        _mainPage.setReadStatus(userReadReport);
+        setReadStatus(userReadReport);
     }
 
     private void setUserReadReport(string val)
@@ -295,11 +282,18 @@ public class Simulation
         }
         else
         {
-            _mainPage.setLists(programs);
-            _mainPage.setStatistics(log);
-            _mainPage.setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
-            //Session["test"] = simulation;
+            finishSimulation();
         }
+    }
+
+    public void finishSimulation()
+    {
+        Session["programList"] = programs;
+        Session["logObject"] = log;
+        setLists(programs);
+        setStatistics(log);
+        setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
+        
     }
 
     private void assignToMemory(Program program, int originalIndex, bool isPhysical)
