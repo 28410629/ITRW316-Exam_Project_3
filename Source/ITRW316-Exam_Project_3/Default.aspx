@@ -11,6 +11,9 @@
     <div class="row">
         <div class="col-md-4">
             <h2>Server Details</h2>
+            <p>
+                <asp:Label ID="LabelServerDetailsDateTime" runat="server" Text="..."></asp:Label>
+            </p>
             <p>Operating system name :
                 <asp:Label ID="LabelOSName" runat="server" Text="..."></asp:Label>
             </p>

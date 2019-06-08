@@ -42,6 +42,7 @@ public partial class _Default : Page
 
     public void updateLabels() // server details
     {
+        LabelServerDetailsDateTime.Text = "Details retrieved on " + DateTime.Now.ToShortDateString() + " at " + DateTime.Now.ToLongTimeString();
         LabelPhysicalMemory.Text = (server.getFreePhysicalMemory() / 1024).ToString() + " MB";
         LabelPhysicalMemoryTotal.Text = (server.getTotalVisibleMemorySize() / 1024).ToString() + " MB" ; 
         LabelVirtualMemory.Text = (server.getFreeVirtualMemory() / 1024).ToString() + " MB";
@@ -56,7 +57,6 @@ public partial class _Default : Page
         userPageSize = (Convert.ToInt64(TextBoxSizePage.Text));
         userSimulationSize = (server.getFreePhysicalMemory() / 1024) - userReservedSize;
         calculatePages();
-        updateLabels();
     }
 
     public void calculatePages()
