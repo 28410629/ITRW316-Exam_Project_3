@@ -89,18 +89,25 @@ public partial class _Default : Page
 
     public void setLists(List<string[]> list)
     {
+        int counterP = 0;
+        int counterS = 0;
+        list.Sort((x, y) => (Convert.ToInt32(x[0])).CompareTo(Convert.ToInt32(y[0])));
         for (int i = 0; i < list.Count; i++)
         {
             if (list.ElementAt(i)[2] == "T" && list.ElementAt(i)[3] == "F")
             {
                 DropDownListProgramsPhysical.Items.Add(list.ElementAt(i)[1]);
+                counterP++;
             }
             if (list.ElementAt(i)[2] == "F" && list.ElementAt(i)[3] == "F")
             {
                 DropDownListProgramsSecondary.Items.Add(list.ElementAt(i)[1]);
+                counterS++;
             }
             DropDownListProgramsRead.Items.Add(list.ElementAt(i)[1]);
         }
+        LabelListInPhysical.Text = "(" + counterP + ")";
+        LabelListInSecondary.Text = "(" + counterS + ")";
     }
 
     public void setStatistics(LogSystem log)
@@ -238,6 +245,8 @@ public partial class _Default : Page
                     // statistics
                     log.logSuccessfulPageRead();
                     log.logPageFaultsResolved();
+                    // update counter for loss of page in secondary
+                    secondaryCounter--;
                     // run move to physical
                     moveToPhysical(index);
                     // report
@@ -255,18 +264,17 @@ public partial class _Default : Page
     {
         try
         {
-            if (programCounter < programAllowed)
+            if (programCounter <= programAllowed)
             {
                 // make program
+                programCounter++;
                 string[] program = new string[4];
                 program[0] = programCounter.ToString();
                 program[1] = "Program " + programCounter;
                 program[2] = "T";
                 program[3] = "F";
-                programCounter++;
                 // stats
                 log.logProgramAdded();
-
                 // check if physical has space
                 if (physicalCounter < physicalAllowed)
                 {
@@ -307,10 +315,8 @@ public partial class _Default : Page
         setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
     }
 
-    private void assignToMemory(string[] program, int originalIndex, bool isPhysical)
+    private void assignToMemory(string[] program, bool isPhysical)
     {
-        // remove from list
-        programs.RemoveAt(originalIndex);
         // set allocated to physical or secondary
         if (isPhysical)
         {
@@ -328,23 +334,25 @@ public partial class _Default : Page
     {
         try
         {
+            // decrease physical counter (page moved from physical to secondary)
+            physicalCounter--;
+            // make copy
             string[] program = programs.ElementAt(programIndex);
+            // remove original from list
+            programs.RemoveAt(programIndex);
             // check space in secondary
-            if (secondaryCounter < secondaryAllowed)
-            {
-                assignToMemory(program, programIndex, false);
-                secondaryCounter++;
-                log.logPageSwap();
-            }
-            else
+            if (!(secondaryCounter < secondaryAllowed))
             {
                 // drop oldest in secondary
                 programs.ElementAt(findOldestSecondary())[3] = "T";
                 log.logPageDrop();
-                // add to secondary
-                assignToMemory(program, programIndex, false);
-                log.logPageSwap();
             }
+            // increment counter
+            secondaryCounter++;
+            // add to secondary
+            assignToMemory(program, false);
+            // statistics
+            log.logPageSwap();
         }
         catch (Exception)
         {
@@ -355,21 +363,22 @@ public partial class _Default : Page
     {
         try
         {
+            // make a copy
             string[] program = programs.ElementAt(programIndex);
+            // remove original from list
+            programs.RemoveAt(programIndex);
             // check space in secondary
-            if (physicalCounter < physicalAllowed)
-            {
-                assignToMemory(program, programIndex, true);
-                log.logPageUnswap();
-            }
-            else
+            if (!(physicalCounter < physicalAllowed))
             {
                 // move oldest in physical to secondary
                 moveToSecondary(findOldestPhysical());
-                // add to physical
-                assignToMemory(program, programIndex, true);
-                log.logPageUnswap();
             }
+            // increase physical counter
+            physicalCounter++;
+            // add to physical
+            assignToMemory(program, true);
+            // statistics
+            log.logPageUnswap();
         }
         catch (Exception)
         {

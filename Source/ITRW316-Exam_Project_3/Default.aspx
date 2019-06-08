@@ -100,12 +100,16 @@
                 <asp:Label ID="LabelSimulationStatus" runat="server" Text="Not Runned" ForeColor="#FF3300"></asp:Label>
             </p>
             <p>
-                List of programs in <strong>physical memory</strong>:
+                List of programs 
+                <asp:Label ID="LabelListInPhysical" runat="server" Text="... "></asp:Label>
+                in <strong>physical memory</strong>:
                 <asp:DropDownList ID="DropDownListProgramsPhysical" runat="server">
                 </asp:DropDownList>
             </p>
             <p>
-                List of programs in <strong>secondary storage</strong>:
+                List of programs 
+                <asp:Label ID="LabelListInSecondary" runat="server" Text="... "></asp:Label>
+                in <strong>secondary storage</strong>:
                 <asp:DropDownList ID="DropDownListProgramsSecondary" runat="server">
                 </asp:DropDownList>
             </p>
