@@ -11,7 +11,14 @@ public partial class _Default : Page
     ServerDetails server = new ServerDetails();
 
     // simulation variables
-    private List<Program> programs = new List<Program>();
+    private List<string[]> programs = new List<string[]>();
+    /* string array of programs content:
+     * 0 : id
+     * 1 : program name
+     * 2 : in memory? T or F
+     * 3 : is dropped? T or F
+     */
+
     private LogSystem log = new LogSystem();
     private Random _random = new Random();
     private int programAllowed = 0;
@@ -80,19 +87,19 @@ public partial class _Default : Page
         LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
     }
 
-    public void setLists(List<Program> list)
+    public void setLists(List<string[]> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
-            if (list.ElementAt(i).getMemoryStatus() && !list.ElementAt(i).getDroppedStatus())
+            if (list.ElementAt(i)[2] == "T" && list.ElementAt(i)[3] == "F")
             {
-                DropDownListProgramsPhysical.Items.Add(list.ElementAt(i).getName());
+                DropDownListProgramsPhysical.Items.Add(list.ElementAt(i)[1]);
             }
-            if (!list.ElementAt(i).getMemoryStatus() && !list.ElementAt(i).getDroppedStatus())
+            if (list.ElementAt(i)[2] == "F" && list.ElementAt(i)[3] == "F")
             {
-                DropDownListProgramsSecondary.Items.Add(list.ElementAt(i).getName());
+                DropDownListProgramsSecondary.Items.Add(list.ElementAt(i)[1]);
             }
-            DropDownListProgramsRead.Items.Add(list.ElementAt(i).getName());
+            DropDownListProgramsRead.Items.Add(list.ElementAt(i)[1]);
         }
     }
 
@@ -128,7 +135,6 @@ public partial class _Default : Page
             LabelSimulationStatus.ForeColor = System.Drawing.Color.Yellow;
             setSimulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text));
             runSimulation();
-           
         }
         catch (Exception)
         {
@@ -137,13 +143,11 @@ public partial class _Default : Page
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
     {
-        programs = (List<Program>)Session["programList"];
+        programs = (List<string[]>)Session["programList"];
         log = (LogSystem)Session["logObject"];
         // read serialised data from app_data
         userReadFunction(DropDownListProgramsRead.SelectedValue);
     }
-
-    
 
     public void setSimulation(int pageCountPhysical, int pageCountSecondary)
     {
@@ -152,7 +156,7 @@ public partial class _Default : Page
         programAllowed = (int)((pageCountPhysical + pageCountSecondary) * 1.2); // 20% more programs are created to simulate page drops as well
     }
 
-    public void setProgramsList(List<Program> program)
+    public void setProgramsList(List<string[]> program)
     {
         programs = program;
     }
@@ -185,7 +189,7 @@ public partial class _Default : Page
         if (programs.Count > 0)
         {
             log.logPageRead();
-            readProgram(programs.ElementAt(_random.Next(programs.Count)).getName());
+            readProgram(programs.ElementAt(_random.Next(programs.Count))[1]);
         }
         else
         {
@@ -195,16 +199,14 @@ public partial class _Default : Page
 
     private int getIndex(string programName)
     {
-        int index = -1;
         for (int i = 0; i < programs.Count; i++)
         {
-            if (programs.ElementAt(i).getName() == programName)
+            if (programs.ElementAt(i)[1] == programName)
             {
-                index = i;
-                return index;
+                return i;
             }
         }
-        return index;
+        return -1;
     }
 
     private void readProgram(string programName)
@@ -212,10 +214,10 @@ public partial class _Default : Page
         try
         {
             int index = getIndex(programName);
-            Program program = programs.ElementAt(index);
+            string[] program = programs.ElementAt(index);
 
             // check memory if cant find it is page fault
-            if (program.getMemoryStatus())
+            if (program[2] == "T")
             {
                 // statistics
                 log.logSuccessfulPageRead();
@@ -225,7 +227,7 @@ public partial class _Default : Page
             {
                 // statistics
                 log.logPageFaults();
-                if (program.getDroppedStatus())
+                if (program[3] == "T")
                 {
                     // statistics
                     log.logFailedPageRead();
@@ -251,38 +253,48 @@ public partial class _Default : Page
 
     private void write()
     {
-        if (programCounter < programAllowed)
+        try
         {
-            // make program
-            Program program = new Program(programCounter, "Program " + programCounter);
-            programCounter++;
-            // stats
-            log.logProgramAdded();
-
-            // check if physical has space
-            if (physicalCounter < physicalAllowed)
+            if (programCounter < programAllowed)
             {
-                // add to physical
-                programs.Add(program);
-                physicalCounter++;
+                // make program
+                string[] program = new string[4];
+                program[0] = programCounter.ToString();
+                program[1] = "Program " + programCounter;
+                program[2] = "T";
+                program[3] = "F";
+                programCounter++;
                 // stats
-                log.logPageAdd();
+                log.logProgramAdded();
+
+                // check if physical has space
+                if (physicalCounter < physicalAllowed)
+                {
+                    // add to physical
+                    programs.Add(program);
+                    physicalCounter++;
+                    // stats
+                    log.logPageAdd();
+                }
+                else
+                {
+                    // move oldest in physical to secondary
+                    moveToSecondary(findOldestPhysical());
+                    // add to physical
+                    programs.Add(program);
+                    // stats
+                    log.logPageAdd();
+                }
+                // run simulation
+                runSimulation();
             }
             else
             {
-                // move oldest in physical to secondary
-                moveToSecondary(findOldestPhysical());
-                // add to physical
-                programs.Add(program);
-                // stats
-                log.logPageAdd();
+                finishSimulation();
             }
-            // run simulation
-            runSimulation();
         }
-        else
+        catch (Exception)
         {
-            finishSimulation();
         }
     }
 
@@ -293,15 +305,21 @@ public partial class _Default : Page
         setLists(programs);
         setStatistics(log);
         setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
-        
     }
 
-    private void assignToMemory(Program program, int originalIndex, bool isPhysical)
+    private void assignToMemory(string[] program, int originalIndex, bool isPhysical)
     {
         // remove from list
         programs.RemoveAt(originalIndex);
         // set allocated to physical or secondary
-        program.setMemoryStatus(isPhysical);
+        if (isPhysical)
+        {
+            program[2] = "T";
+        }
+        else
+        {
+            program[2] = "F";
+        }
         // add to end of list
         programs.Add(program);
     }
@@ -310,7 +328,7 @@ public partial class _Default : Page
     {
         try
         {
-            Program program = programs.ElementAt(programIndex);
+            string[] program = programs.ElementAt(programIndex);
             // check space in secondary
             if (secondaryCounter < secondaryAllowed)
             {
@@ -321,7 +339,7 @@ public partial class _Default : Page
             else
             {
                 // drop oldest in secondary
-                programs.ElementAt(findOldestSecondary()).setDroppedStatus(true);
+                programs.ElementAt(findOldestSecondary())[3] = "T";
                 log.logPageDrop();
                 // add to secondary
                 assignToMemory(program, programIndex, false);
@@ -337,7 +355,7 @@ public partial class _Default : Page
     {
         try
         {
-            Program program = programs.ElementAt(programIndex);
+            string[] program = programs.ElementAt(programIndex);
             // check space in secondary
             if (physicalCounter < physicalAllowed)
             {
@@ -362,20 +380,18 @@ public partial class _Default : Page
     {
         try
         {
-            int programIndex = -1;
             // search for oldest program in secondary
             for (int j = 0; j < programs.Count; j++)
             {
-                if (!programs.ElementAt(j).getDroppedStatus())
+                if (programs.ElementAt(j)[3] == "F")
                 {
-                    if (!programs.ElementAt(j).getMemoryStatus())
+                    if (programs.ElementAt(j)[2] == "F")
                     {
-                        programIndex = j;
-                        return programIndex;
+                        return j;
                     }
                 }
             }
-            return programIndex;
+            return -1;
         }
         catch (Exception)
         {
@@ -387,20 +403,18 @@ public partial class _Default : Page
     {
         try
         {
-            int programIndex = -1;
             // search for oldest program in physical
             for (int i = 0; i < programs.Count; i++)
             {
-                if (!programs.ElementAt(i).getDroppedStatus())
+                if (programs.ElementAt(i)[3] == "F")
                 {
-                    if (programs.ElementAt(i).getMemoryStatus())
+                    if (programs.ElementAt(i)[2] == "T")
                     {
-                        programIndex = i;
-                        return programIndex;
+                        return i;
                     }
                 }
             }
-            return programIndex;
+            return -1;
         }
         catch (Exception)
         {
