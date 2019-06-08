@@ -51,7 +51,7 @@ public partial class _Default : Page
     {
         LabelServerDetailsDateTime.Text = "Details retrieved on " + DateTime.Now.ToShortDateString() + " at " + DateTime.Now.ToLongTimeString();
         LabelPhysicalMemory.Text = (server.getFreePhysicalMemory() / 1024).ToString() + " MB";
-        LabelPhysicalMemoryTotal.Text = (server.getTotalVisibleMemorySize() / 1024).ToString() + " MB" ; 
+        LabelPhysicalMemoryTotal.Text = (server.getTotalVisibleMemorySize() / 1024).ToString() + " MB";
         LabelVirtualMemory.Text = (server.getFreeVirtualMemory() / 1024).ToString() + " MB";
         LabelVirtualMemoryTotal.Text = (server.getTotalVirtualMemorySize() / 1024).ToString() + " MB";
         LabelOSName.Text = server.getOSCaption();  // display operating system caption
@@ -245,8 +245,6 @@ public partial class _Default : Page
                     // statistics
                     log.logSuccessfulPageRead();
                     log.logPageFaultsResolved();
-                    // update counter for loss of page in secondary
-                    secondaryCounter--;
                     // run move to physical
                     moveToPhysical(index);
                     // report
@@ -264,10 +262,9 @@ public partial class _Default : Page
     {
         try
         {
+            setCounters();
             if (programCounter <= programAllowed)
             {
-                // make program
-                programCounter++;
                 string[] program = new string[4];
                 program[0] = programCounter.ToString();
                 program[1] = "Program " + programCounter;
@@ -276,23 +273,15 @@ public partial class _Default : Page
                 // stats
                 log.logProgramAdded();
                 // check if physical has space
-                if (physicalCounter < physicalAllowed)
-                {
-                    // add to physical
-                    programs.Add(program);
-                    physicalCounter++;
-                    // stats
-                    log.logPageAdd();
-                }
-                else
+                if (!(physicalCounter < physicalAllowed))
                 {
                     // move oldest in physical to secondary
                     moveToSecondary(findOldestPhysical());
-                    // add to physical
-                    programs.Add(program);
-                    // stats
-                    log.logPageAdd();
                 }
+                // add to physical
+                programs.Add(program);
+                // stats
+                log.logPageAdd();
                 // run simulation
                 runSimulation();
             }
@@ -315,6 +304,30 @@ public partial class _Default : Page
         setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
     }
 
+    public void setCounters()
+    {
+        int T = 0;
+        int P = 0;
+        int S = 0;
+        string[] arr;
+        for (int i = 0; i < programs.Count; i++)
+        {
+            T++;
+            arr = programs.ElementAt(i);
+            if (arr[2] == "T" && arr[3] == "F")
+            {
+                P++;
+            }
+            if (arr[2] == "F" && arr[3] == "F")
+            {
+                S++;
+            }
+        }
+        programCounter = T;
+        physicalCounter = P;
+        secondaryCounter = S;
+    }
+
     private void assignToMemory(string[] program, bool isPhysical)
     {
         // set allocated to physical or secondary
@@ -334,8 +347,7 @@ public partial class _Default : Page
     {
         try
         {
-            // decrease physical counter (page moved from physical to secondary)
-            physicalCounter--;
+            setCounters();
             // make copy
             string[] program = programs.ElementAt(programIndex);
             // remove original from list
@@ -347,8 +359,6 @@ public partial class _Default : Page
                 programs.ElementAt(findOldestSecondary())[3] = "T";
                 log.logPageDrop();
             }
-            // increment counter
-            secondaryCounter++;
             // add to secondary
             assignToMemory(program, false);
             // statistics
@@ -363,6 +373,7 @@ public partial class _Default : Page
     {
         try
         {
+            setCounters();
             // make a copy
             string[] program = programs.ElementAt(programIndex);
             // remove original from list
@@ -373,8 +384,6 @@ public partial class _Default : Page
                 // move oldest in physical to secondary
                 moveToSecondary(findOldestPhysical());
             }
-            // increase physical counter
-            physicalCounter++;
             // add to physical
             assignToMemory(program, true);
             // statistics
