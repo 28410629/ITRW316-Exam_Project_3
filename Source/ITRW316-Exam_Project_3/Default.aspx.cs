@@ -28,6 +28,7 @@ public partial class _Default : Page
     private int secondaryAllowed = 0;
     private int secondaryCounter = 0;
     private string userReadReport = "";
+    private int initializationCounter = 0;
 
     // user input values
     public long userReservedSize = 0;
@@ -45,7 +46,10 @@ public partial class _Default : Page
         server.getSystemInformation();
         server.assignRawValues();
         updateLabels();
+        
     }
+
+    
 
     public void updateLabels() // server details
     {
@@ -60,10 +64,58 @@ public partial class _Default : Page
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
     {
-        userReservedSize = (Convert.ToInt64(TextBoxSizeOS.Text));
-        userPageSize = (Convert.ToInt64(TextBoxSizePage.Text));
-        userSimulationSize = (server.getFreePhysicalMemory() / 1024) - userReservedSize;
-        calculatePages();
+        if (TextBoxSizeOS.Text == "")
+        {
+            labelOSValidation.ForeColor = System.Drawing.Color.Red;
+            labelOSValidation.Text = "Enter a value";
+
+        }
+        else if (TextBoxSizePage.Text == "")
+        {
+            labelPageFrameValidation.ForeColor = System.Drawing.Color.Red;
+            labelPageFrameValidation.Text = "Enter a value";
+
+        }
+        else if (textboxMemoryPercentage.Text == "")
+        {
+            labelMemoryValidation.ForeColor = System.Drawing.Color.Red;
+            labelMemoryValidation.Text = "Enter a value";
+
+        }
+        else if ((Convert.ToInt64(TextBoxSizeOS.Text) < ((0.1*server.getFreePhysicalMemory())/1024) || Convert.ToInt64(TextBoxSizeOS.Text) > ((0.25 * server.getFreePhysicalMemory())/1024)))
+        {
+            labelOSValidation.ForeColor = System.Drawing.Color.Red;
+            labelOSValidation.Text = "Invalid Entry: OS must be larger than " + ((0.1 * server.getFreePhysicalMemory()) / 1024) + " and smaller than " + ((0.25 * server.getFreePhysicalMemory()) / 1024);
+        }
+
+        else if(((Convert.ToInt64(TextBoxSizePage.Text)) < 10 || (Convert.ToInt64(TextBoxSizePage.Text)) > 250) && TextBoxSizePage.Text == "")
+        {
+            labelPageFrameValidation.ForeColor = System.Drawing.Color.Red;
+            labelPageFrameValidation.Text = "Invalid Entry";
+        }
+        else if (((Convert.ToInt64(textboxMemoryPercentage.Text)) < 20 || (Convert.ToInt64(textboxMemoryPercentage.Text)) > 80) && textboxMemoryPercentage.Text == "")
+        {
+            labelMemoryValidation.ForeColor = System.Drawing.Color.Red;
+            labelMemoryValidation.Text = "Invalid Entry";
+        }
+        else
+        {
+            labelOSValidation.ForeColor = System.Drawing.Color.Black;
+            labelOSValidation.Text = "...";
+
+            labelPageFrameValidation.ForeColor = System.Drawing.Color.Black;
+            labelPageFrameValidation.Text = "..."; ;
+
+            labelMemoryValidation.ForeColor = System.Drawing.Color.Black;
+            labelMemoryValidation.Text = "..."; ;
+
+            userReservedSize = (Convert.ToInt64(TextBoxSizeOS.Text));
+            userPageSize = (Convert.ToInt64(TextBoxSizePage.Text));
+            userSimulationSize = (server.getFreePhysicalMemory() / 1024) - userReservedSize;
+            calculatePages();
+        }
+
+        
     }
 
     public void calculatePages()
@@ -85,6 +137,9 @@ public partial class _Default : Page
         labelPageCountStorage.Text = pageAmountInStorage.ToString();
 
         LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
+
+        
+           
     }
 
     public void setLists(List<string[]> list)
@@ -152,6 +207,8 @@ public partial class _Default : Page
         catch (Exception)
         {
         }
+        
+        
     }
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)

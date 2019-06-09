@@ -80,16 +80,19 @@
                 <em>
                 &nbsp;<asp:TextBox ID="TextBoxSizeOS" runat="server" Height="20px" style="font-style: italic" Width="90px" CssClass="input-lg"></asp:TextBox>
                 </em>
+                <asp:Label ID="labelOSValidation" runat="server" Text="..."></asp:Label>
             </p>
             <p>
                 <strong>Page Frame Size (MB):&nbsp; </strong>
                 <em>&nbsp;
                 <asp:TextBox ID="TextBoxSizePage" runat="server" style="font-style: italic" Width="89px" CssClass="input-lg" Height="20px"></asp:TextBox>
+                <asp:Label ID="labelPageFrameValidation" runat="server" Text="..."></asp:Label>
                 </em>
             </p>
             <p>
                 <strong>Percentage Physical Memory (%):</strong><em>&nbsp;&nbsp;&nbsp;&nbsp;
                 <asp:TextBox ID="textboxMemoryPercentage" runat="server" style="font-style: italic" Width="86px" CssClass="input-lg" Height="21px"></asp:TextBox>
+                <asp:Label ID="labelMemoryValidation" runat="server" Text="..."></asp:Label>
                 </em>
             </p>
             <p>
