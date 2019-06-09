@@ -21,38 +21,33 @@ public partial class _Default : Page
 
     private LogSystem log = new LogSystem();
     private Random _random = new Random();
-    private int programAllowed = 0;
-    private int programCounter = 0;
-    private int physicalAllowed = 0;
-    private int physicalCounter = 0;
-    private int secondaryAllowed = 0;
-    private int secondaryCounter = 0;
+    private int programAllowed = -1;
+    private int programCounter = -1;
+    private int physicalAllowed = -1;
+    private int physicalCounter = -1;
+    private int secondaryAllowed = -1;
+    private int secondaryCounter = -1;
     private string userReadReport = "";
-    private bool pagesCalculated = false;
+    private bool finishedSim = false;
+    private bool canStartSim = false;
 
     // user input values
-    public long userReservedSize = 0;
-    public long userPageSize = 0;
-    public long pageAmountInMemory = 0;
-    public long pageAmountInStorage = 0;
-    public long userSimulationSize = 0;
-    public long reservedForMemory = 0;
-    public long reservedForStorage = 0;
-    public double percentageInMemory = 0.00;
-    public double percentageInStorage = 0.00;
+    public long userReservedSize = -1;
+    public long userPageSize = -1;
+    public long pageAmountInMemory = -1;
+    public long pageAmountInStorage = -1;
+    public long userSimulationSize = -1;
+    public long reservedForMemory = -1;
+    public long reservedForStorage = -1;
+    public double percentageInMemory = -1.11;
+    public double percentageInStorage = -1.11;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         server.getSystemInformation();
         server.assignRawValues();
         updateLabels();
-
-        if (!pagesCalculated)
-            ButtonStart.Enabled = false;
     }
-
-    
-
     public void updateLabels() // server details
     {
         LabelServerDetailsDateTime.Text = "Details retrieved on " + DateTime.Now.ToShortDateString() + " at " + DateTime.Now.ToLongTimeString();
@@ -66,80 +61,57 @@ public partial class _Default : Page
 
     protected void ButtonCalculate_Click(object sender, EventArgs e)
     {
-        if (!validateTextboxes())
-        {}
-        else
+        labelOSValidation.ForeColor = System.Drawing.Color.Black;
+        labelOSValidation.Text = "...";
+        labelMemoryValidation.ForeColor = System.Drawing.Color.Black;
+        labelMemoryValidation.Text = "...";
+        labelPageFrameValidation.ForeColor = System.Drawing.Color.Black;
+        labelPageFrameValidation.Text = "...";
+        try
         {
-            labelOSValidation.ForeColor = System.Drawing.Color.Black;
-            labelOSValidation.Text = "...";
-
-            labelPageFrameValidation.ForeColor = System.Drawing.Color.Black;
-            labelPageFrameValidation.Text = "..."; ;
-
-            labelMemoryValidation.ForeColor = System.Drawing.Color.Black;
-            labelMemoryValidation.Text = "..."; ;
-
             userReservedSize = (Convert.ToInt64(TextBoxSizeOS.Text));
-            userPageSize = (Convert.ToInt64(TextBoxSizePage.Text));
             userSimulationSize = (server.getFreePhysicalMemory() / 1024) - userReservedSize;
+        }
+        catch (Exception)
+        {
+            labelOSValidation.ForeColor = System.Drawing.Color.Red;
+            labelOSValidation.Text = "Please fill correctly (eg. 300).";
+        }
+        try
+        {
+            userPageSize = (Convert.ToInt64(TextBoxSizePage.Text));
+        }
+        catch (Exception)
+        {
+            labelPageFrameValidation.ForeColor = System.Drawing.Color.Red;
+            labelPageFrameValidation.Text = "Please fill correctly (eg. 300).";
+        }
+        try
+        {
+            percentageInMemory = Convert.ToInt64(textboxMemoryPercentage.Text);
+            percentageInStorage = 100 - percentageInMemory;
+        }
+        catch (Exception)
+        {
+            labelMemoryValidation.ForeColor = System.Drawing.Color.Red;
+            labelMemoryValidation.Text = "Please fill correctly (eg. 300).";
+        }
+        try
+        {
+            reservedForMemory = Convert.ToInt64(userSimulationSize * (percentageInMemory / 100));
+        }
+        catch (Exception) { }
+        try
+        {
             calculatePages();
-
-            pagesCalculated = true;
-            ButtonStart.Enabled = true;
         }
-    }
-
-    public bool validateTextboxes()
-    {
-        if (TextBoxSizeOS.Text == "")
-        {
-            labelOSValidation.ForeColor = System.Drawing.Color.Red;
-            labelOSValidation.Text = "Enter a value";
-            return false;
-
-        }
-        else if (TextBoxSizePage.Text == "")
-        {
-            labelPageFrameValidation.ForeColor = System.Drawing.Color.Red;
-            labelPageFrameValidation.Text = "Enter a value";
-            return false;
-        }
-        else if (textboxMemoryPercentage.Text == "")
-        {
-            labelMemoryValidation.ForeColor = System.Drawing.Color.Red;
-            labelMemoryValidation.Text = "Enter a value";
-            return false;
-        }
-        else if ((Convert.ToInt64(TextBoxSizeOS.Text) < ((0.1 * server.getFreePhysicalMemory()) / 1024) || Convert.ToInt64(TextBoxSizeOS.Text) > ((0.5 * server.getFreePhysicalMemory()) / 1024)))
-        {
-            labelOSValidation.ForeColor = System.Drawing.Color.Red;
-            labelOSValidation.Text = "Invalid Entry: OS must be larger than " + ((0.1 * server.getFreePhysicalMemory()) / 1024) + " and smaller than " + ((0.25 * server.getFreePhysicalMemory()) / 1024);
-            return false;
-        }
-
-        else if (((Convert.ToInt64(TextBoxSizePage.Text)) < 10 || (Convert.ToInt64(TextBoxSizePage.Text)) > 150) && TextBoxSizePage.Text == "")
-        {
-            labelPageFrameValidation.ForeColor = System.Drawing.Color.Red;
-            labelPageFrameValidation.Text = "Invalid Entry";
-            return false;
-        }
-        else if (((Convert.ToInt64(textboxMemoryPercentage.Text)) < 20 || (Convert.ToInt64(textboxMemoryPercentage.Text)) > 80) && textboxMemoryPercentage.Text == "")
-        {
-            labelMemoryValidation.ForeColor = System.Drawing.Color.Red;
-            labelMemoryValidation.Text = "Invalid Entry";
-            return false;
-        }
-        else
-            return true;
+        catch (Exception) { }
     }
 
     public void calculatePages()
     {
-        percentageInMemory = Convert.ToInt64(textboxMemoryPercentage.Text);
-        percentageInStorage = 100 - percentageInMemory;
         labelStoragePercentage.Text = percentageInStorage.ToString();
 
-        reservedForMemory = Convert.ToInt64(userSimulationSize * (percentageInMemory / 100));
         labelMemorySimulation.Text = reservedForMemory.ToString();
 
         reservedForStorage = userSimulationSize - reservedForMemory;
@@ -152,6 +124,9 @@ public partial class _Default : Page
         labelPageCountStorage.Text = pageAmountInStorage.ToString();
 
         LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
+
+        canStartSim = true;
+        Session["canStartSim"] = canStartSim;
     }
 
     public void setLists(List<string[]> list)
@@ -211,24 +186,45 @@ public partial class _Default : Page
     {
         try
         {
-            LabelSimulationStatus.Text = "Simulation is in progress, please wait.";
-            LabelSimulationStatus.ForeColor = System.Drawing.Color.Yellow;
-            setSimulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text));
-            runSimulation();
+            canStartSim = (bool)Session["canStartSim"];
+            if (canStartSim)
+            {
+                LabelSimulationStatus.Text = "Simulation is in progress, please wait.";
+                LabelSimulationStatus.ForeColor = System.Drawing.Color.Purple;
+                setSimulation(Convert.ToInt32(LabelPageCountMemory.Text), Convert.ToInt32(labelPageCountStorage.Text));
+                runSimulation();
+            }
+            else
+            {
+                LabelSimulationStatus.Text = "Inactive, please enter values required.";
+            }
         }
-        catch (Exception)
-        {
-        }
-        
-        
+        catch (Exception) { }
     }
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
     {
-        programs = (List<string[]>)Session["programList"];
-        log = (LogSystem)Session["logObject"];
-        // read serialised data from app_data
-        userReadFunction(DropDownListProgramsRead.SelectedValue);
+        LabelSearchValidation.ForeColor = System.Drawing.Color.Black;
+        LabelSearchValidation.Text = "...";
+        finishedSim = (bool)Session["finishedSim"];
+        if (finishedSim)
+        {
+            programAllowed = (int)Session["programAllowed"];
+            programCounter = (int)Session["programCounter"];
+            physicalAllowed = (int)Session["physicalAllowed"];
+            physicalCounter = (int)Session["physicalCounter"];
+            secondaryAllowed = (int)Session["secondaryAllowed"];
+            secondaryCounter = (int)Session["secondaryCounter"];
+            programs = (List<string[]>)Session["programList"];
+            log = (LogSystem)Session["logObject"];
+            // read serialised data from app_data
+            userReadFunction(DropDownListProgramsRead.SelectedValue);
+        }
+        else
+        {
+            LabelSearchValidation.ForeColor = System.Drawing.Color.Red;
+            LabelSearchValidation.Text = "Please run simulation.";
+        }
     }
 
     public void setSimulation(int pageCountPhysical, int pageCountSecondary)
@@ -372,6 +368,15 @@ public partial class _Default : Page
 
     public void finishSimulation()
     {
+        // user report and random object not persistance neccessary for simulation 
+        finishedSim = true;
+        Session["finishedSim"] = finishedSim;
+        Session["programAllowed"] = programAllowed;
+        Session["programCounter"] = programCounter;
+        Session["physicalAllowed"] = physicalAllowed;
+        Session["physicalCounter"] = physicalCounter;
+        Session["secondaryAllowed"] = secondaryAllowed;
+        Session["secondaryCounter"] = secondaryCounter;
         Session["programList"] = programs;
         Session["logObject"] = log;
         setLists(programs);

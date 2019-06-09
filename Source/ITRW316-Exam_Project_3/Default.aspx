@@ -31,14 +31,13 @@
         }
     </style>
 
-   
-    <div class="jumbotron">
+   <div class ="mycontainer">
+    <div class="block">
         <h2>ITRW316 - Exam Project 3</h2>
-        <p class="lead" style="font-size: 13pt">Coenraad Human (28410629)</p>
-        <p class="lead" style="font-size: 13pt">Eon Viljoen (28807995)</p>
-        <p class="lead" style="font-size: 13pt">Morne Venter (28634748)</p>
+        <p class="lead" style="font-size: 13pt">by Coenraad Human (28410629), Eon Viljoen (28807995) and Morne Venter (28634748).</p>
         <p><a href="https://github.com/coenraadhuman/ITRW316-Exam_Project_3" class="btn btn-primary btn-lg">Private Github Repository &raquo;</a></p>
     </div>
+       </div>
     <div class ="mycontainer">
     <div class="block">
             <h2>Server Details</h2>
@@ -80,7 +79,7 @@
                 <em>
                 &nbsp;<asp:TextBox ID="TextBoxSizeOS" runat="server" Height="20px" style="font-style: italic" Width="90px" CssClass="input-lg"></asp:TextBox>
                 </em>
-                <asp:Label ID="labelOSValidation" runat="server" Text="..."></asp:Label>
+                <asp:Label ID="labelOSValidation" runat="server" Text="..." style="font-style: italic"></asp:Label>
             </p>
             <p>
                 <strong>Page Frame Size (MB):&nbsp; </strong>
@@ -203,6 +202,7 @@
             </p>
             <p>
                 <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" OnClick="ButtonSearchPage_Click" BorderColor="#0066FF" BorderStyle="Groove" BorderWidth="2px" CssClass="btn active" />
+            &nbsp;<asp:Label ID="LabelSearchValidation" runat="server" Text="..."></asp:Label>
             </p>
             <p>
                 <strong>Page Status:</strong> <asp:Label ID="LabelReadStatus" runat="server" Text="..."></asp:Label>
