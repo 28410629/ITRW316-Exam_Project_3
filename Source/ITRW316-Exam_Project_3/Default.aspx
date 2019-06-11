@@ -29,6 +29,13 @@
               border: 2px solid #3368bf;
               width:100%;
         }
+
+        .mybtn
+        {
+              box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
+              border-radius: 2px;
+             
+        }
     </style>
 
    <div class ="mycontainer">
@@ -77,21 +84,27 @@
             <p>
                 <strong>Reserve For OS (MB):&nbsp;&nbsp; </strong>
                 <em>
-                &nbsp;<asp:TextBox ID="TextBoxSizeOS" runat="server" Height="20px" style="font-style: italic" Width="90px" CssClass="input-lg"></asp:TextBox>
+                &nbsp;<asp:TextBox ID="TextBoxSizeOS" runat="server" Height="20px" style="font-style: italic; top: 0px; left: 0px;" Width="118px" CssClass="mybtn"></asp:TextBox>
                 </em>
-                <asp:Label ID="labelOSValidation" runat="server" Text="..." style="font-style: italic"></asp:Label>
+                <asp:Label ID="labelOSValidation" runat="server" style="font-style: italic"></asp:Label>
+                <asp:RangeValidator ID="osRange" runat="server" ControlToValidate="TextBoxSizeOS" ErrorMessage="Value out of range." Font-Bold="True" Font-Italic="True" ForeColor="#CC0000" MaximumValue="250" MinimumValue="1" Type="Integer"></asp:RangeValidator>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBoxSizeOS" ErrorMessage=" Please enter a digit." Font-Bold="True" ForeColor="#CC0000"></asp:RequiredFieldValidator>
             </p>
             <p>
                 <strong>Page Frame Size (MB):&nbsp; </strong>
                 <em>&nbsp;
-                <asp:TextBox ID="TextBoxSizePage" runat="server" style="font-style: italic" Width="89px" CssClass="input-lg" Height="20px"></asp:TextBox>
-                <asp:Label ID="labelPageFrameValidation" runat="server" Text="..."></asp:Label>
+                <asp:TextBox ID="TextBoxSizePage" runat="server" style="font-style: italic" Width="110px" Height="20px" CssClass="mybtn"></asp:TextBox>
+                <asp:Label ID="labelPageFrameValidation" runat="server"></asp:Label>
+                <asp:RangeValidator ID="pagesize" runat="server" ControlToValidate="TextBoxSizePage" ErrorMessage="Value out of range." Font-Bold="True" ForeColor="#CC0000" MaximumValue="1000" MinimumValue="50" Type="Integer"></asp:RangeValidator>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="TextBoxSizePage" ErrorMessage=" Please enter a digit." Font-Bold="True" ForeColor="#CC0000"></asp:RequiredFieldValidator>
                 </em>
             </p>
             <p>
                 <strong>Percentage Physical Memory (%):</strong><em>&nbsp;&nbsp;&nbsp;&nbsp;
-                <asp:TextBox ID="textboxMemoryPercentage" runat="server" style="font-style: italic" Width="86px" CssClass="input-lg" Height="21px"></asp:TextBox>
-                <asp:Label ID="labelMemoryValidation" runat="server" Text="..."></asp:Label>
+                <asp:TextBox ID="textboxMemoryPercentage" runat="server" style="font-style: italic" Width="120px" Height="21px" CssClass="mybtn"></asp:TextBox>
+                <asp:Label ID="labelMemoryValidation" runat="server"></asp:Label>
+                <asp:RangeValidator ID="physMem" runat="server" ControlToValidate="textboxMemoryPercentage" ErrorMessage="Value out of range." Font-Bold="True" ForeColor="#CC0000" MaximumValue="80" MinimumValue="20" Type="Integer"></asp:RangeValidator>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="textboxMemoryPercentage" ErrorMessage=" Please enter a digit." Font-Bold="True" ForeColor="#CC0000"></asp:RequiredFieldValidator>
                 </em>
             </p>
             <p>
@@ -128,7 +141,7 @@
 
                 &nbsp;&nbsp;&nbsp;&nbsp;
 
-                <asp:Button ID="ButtonStart" runat="server" Text=" Start Simulation" OnClick="ButtonStart_Click" BorderColor="#0066FF" BorderStyle="Groove" BorderWidth="2px" CssClass="btn active" Height="43px" ToolTip=" Start Simulation" Width="187px" />
+                <asp:Button ID="ButtonStart" runat="server" Text=" Start Simulation" OnClick="ButtonStart_Click" BorderColor="#0066FF" BorderStyle="Groove" BorderWidth="2px" CssClass="btn active" Height="43px" ToolTip=" Start Simulation" Width="187px" Enabled="False" />
             </p>
         </div>
 
@@ -201,7 +214,7 @@
                 </asp:DropDownList>
             </p>
             <p>
-                <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" OnClick="ButtonSearchPage_Click" BorderColor="#0066FF" BorderStyle="Groove" BorderWidth="2px" CssClass="btn active" />
+                <asp:Button ID="ButtonSearchPage" runat="server" Text="Search" OnClick="ButtonSearchPage_Click" BorderColor="#0066FF" BorderStyle="Groove" BorderWidth="2px" CssClass="btn active" Enabled="False" />
             &nbsp;<asp:Label ID="LabelSearchValidation" runat="server" Text="..."></asp:Label>
             </p>
             <p>

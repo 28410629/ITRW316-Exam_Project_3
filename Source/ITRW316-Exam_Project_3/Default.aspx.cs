@@ -21,32 +21,35 @@ public partial class _Default : Page
 
     private LogSystem log = new LogSystem();
     private Random _random = new Random();
-    private int programAllowed = -1;
-    private int programCounter = -1;
-    private int physicalAllowed = -1;
-    private int physicalCounter = -1;
-    private int secondaryAllowed = -1;
-    private int secondaryCounter = -1;
+    private int programAllowed = 0;
+    private int programCounter = 0;
+    private int physicalAllowed = 0;
+    private int physicalCounter = 0;
+    private int secondaryAllowed = 0;
+    private int secondaryCounter = 0;
     private string userReadReport = "";
     private bool finishedSim = false;
     private bool canStartSim = false;
 
     // user input values
-    public long userReservedSize = -1;
-    public long userPageSize = -1;
-    public long pageAmountInMemory = -1;
-    public long pageAmountInStorage = -1;
-    public long userSimulationSize = -1;
-    public long reservedForMemory = -1;
-    public long reservedForStorage = -1;
-    public double percentageInMemory = -1.11;
-    public double percentageInStorage = -1.11;
+    public long userReservedSize = 0;
+    public long userPageSize = 0;
+    public long pageAmountInMemory = 0;
+    public long pageAmountInStorage = 0;
+    public long userSimulationSize = 0;
+    public long reservedForMemory = 0;
+    public long reservedForStorage = 0;
+    public double percentageInMemory = 0f;
+    public double percentageInStorage = 0f;
+    public bool hasPressedSearch = true;
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
         server.getSystemInformation();
         server.assignRawValues();
         updateLabels();
+      
     }
     public void updateLabels() // server details
     {
@@ -76,6 +79,7 @@ public partial class _Default : Page
         {
             labelOSValidation.ForeColor = System.Drawing.Color.Red;
             labelOSValidation.Text = "Please fill correctly (eg. 300).";
+          
         }
         try
         {
@@ -85,27 +89,39 @@ public partial class _Default : Page
         {
             labelPageFrameValidation.ForeColor = System.Drawing.Color.Red;
             labelPageFrameValidation.Text = "Please fill correctly (eg. 300).";
+           
         }
         try
         {
             percentageInMemory = Convert.ToInt64(textboxMemoryPercentage.Text);
             percentageInStorage = 100 - percentageInMemory;
+            
         }
         catch (Exception)
         {
             labelMemoryValidation.ForeColor = System.Drawing.Color.Red;
             labelMemoryValidation.Text = "Please fill correctly (eg. 300).";
+           
         }
         try
         {
             reservedForMemory = Convert.ToInt64(userSimulationSize * (percentageInMemory / 100));
         }
-        catch (Exception) { }
+        catch (Exception)
+        {
+            
+        }
         try
         {
             calculatePages();
         }
-        catch (Exception) { }
+        catch (Exception)
+        {
+            
+        }
+
+        
+      
     }
 
     public void calculatePages()
@@ -127,6 +143,7 @@ public partial class _Default : Page
 
         canStartSim = true;
         Session["canStartSim"] = canStartSim;
+        ButtonStart.Enabled = true;
     }
 
     public void setLists(List<string[]> list)
@@ -137,8 +154,6 @@ public partial class _Default : Page
 
         int counterP = 0;
         int counterS = 0;
-
-        list.Sort((x, y) => (Convert.ToInt32(x[0])).CompareTo(Convert.ToInt32(y[0])));
 
         for (int i = 0; i < list.Count; i++)
         {
@@ -152,6 +167,12 @@ public partial class _Default : Page
                 DropDownListProgramsSecondary.Items.Add(list.ElementAt(i)[1]);
                 counterS++;
             }
+        }
+
+        //list.Sort((x, y) => (Convert.ToInt32(x[0])).CompareTo(Convert.ToInt32(y[0])));
+
+        for (int i = 0; i < list.Count; i++)
+        { 
             DropDownListProgramsRead.Items.Add(list.ElementAt(i)[1]);
         }
         LabelListInPhysical.Text = "(" + counterP + ")";
@@ -184,6 +205,9 @@ public partial class _Default : Page
 
     protected void ButtonStart_Click(object sender, EventArgs e)
     {
+
+
+
         try
         {
             canStartSim = (bool)Session["canStartSim"];
@@ -200,15 +224,18 @@ public partial class _Default : Page
             }
         }
         catch (Exception) { }
+
     }
 
     protected void ButtonSearchPage_Click(object sender, EventArgs e)
     {
+        
         LabelSearchValidation.ForeColor = System.Drawing.Color.Black;
         LabelSearchValidation.Text = "...";
         finishedSim = (bool)Session["finishedSim"];
         if (finishedSim)
         {
+            hasPressedSearch = false;
             programAllowed = (int)Session["programAllowed"];
             programCounter = (int)Session["programCounter"];
             physicalAllowed = (int)Session["physicalAllowed"];
@@ -225,6 +252,8 @@ public partial class _Default : Page
             LabelSearchValidation.ForeColor = System.Drawing.Color.Red;
             LabelSearchValidation.Text = "Please run simulation.";
         }
+
+        
     }
 
     public void setSimulation(int pageCountPhysical, int pageCountSecondary)
@@ -247,7 +276,7 @@ public partial class _Default : Page
 
     private void setUserReadReport(string val)
     {
-        userReadReport = val;
+        userReadReport = DropDownListProgramsRead.SelectedValue +" - "+val;
     }
 
     public void runSimulation()
@@ -311,7 +340,7 @@ public partial class _Default : Page
                     log.logFailedPageRead();
                     setUserReadReport("Unsuccesfully read, page was dropped from secondary storage!");
                 }
-                else
+                else if(program[2]=="F" && program[3]=="F")
                 {
                     // statistics
                     log.logSuccessfulPageRead();
@@ -319,10 +348,21 @@ public partial class _Default : Page
                     // run move to physical
                     moveToPhysical(index);
                     // report
-                    setUserReadReport("Page fault occured, resolving.\nSuccesfully read page from physical memory!");
+                    setUserReadReport("Page fault occured, resolving by paging to memory.\nSuccesfully read page from physical memory!");
+                }
+                else
+                {
+                    setUserReadReport("Unknown error occured. Yelp.");
                 }
             }
-            runSimulation();
+
+            if (hasPressedSearch)
+            {
+                runSimulation();
+            }
+            else
+                finishSimulation();
+            
         }
         catch (Exception)
         {
@@ -382,6 +422,8 @@ public partial class _Default : Page
         setLists(programs);
         setStatistics(log);
         setSimulationStatus("Simulation is finished, you can use read function!", System.Drawing.Color.Green);
+        ButtonSearchPage.Enabled = true;
+       
     }
 
     public void setCounters()
