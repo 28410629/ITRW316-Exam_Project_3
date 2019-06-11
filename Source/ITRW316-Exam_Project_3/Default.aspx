@@ -107,7 +107,7 @@
                 <em>&nbsp;
                 <asp:TextBox ID="TextBoxSizePage" runat="server" style="font-style: italic" Width="160px" Height="27px" CssClass="mybtn"></asp:TextBox>
                 <asp:Label ID="labelPageFrameValidation" runat="server"></asp:Label>
-                <asp:RangeValidator ID="pagesize" runat="server" ControlToValidate="TextBoxSizePage" ErrorMessage="Value out of range." Font-Bold="True" ForeColor="#CC0000" MaximumValue="1000" MinimumValue="50" Type="Integer"></asp:RangeValidator>
+                <asp:RangeValidator ID="pagesize" runat="server" ControlToValidate="TextBoxSizePage" ErrorMessage="Value out of range." Font-Bold="True" ForeColor="#CC0000" MaximumValue="125" MinimumValue="1" Type="Integer"></asp:RangeValidator>
                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="TextBoxSizePage" ErrorMessage=" Please enter a digit." Font-Bold="True" ForeColor="#CC0000"></asp:RequiredFieldValidator>
                 </em>
             </p>

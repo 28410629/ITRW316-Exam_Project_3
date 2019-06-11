@@ -141,6 +141,13 @@ public partial class _Default : Page
 
         LabelSimulationSize.Text = ((server.getFreePhysicalMemory() / 1024) - (userReservedSize)).ToString() + " MB";
 
+        if (pageAmountInMemory + pageAmountInStorage >= 150)
+        {
+            labelPageCountStorage.Text = "Too many pages. Limit of 150 exceeded.";
+            LabelPageCountMemory.Text = "Too many pages. Limit of 150 exceeded.";
+            return;
+        }
+
         canStartSim = true;
         Session["canStartSim"] = canStartSim;
         ButtonStart.Enabled = true;
