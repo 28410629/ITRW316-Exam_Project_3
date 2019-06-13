@@ -54,7 +54,7 @@
     <div class="block">
         <h2>ITRW316 - Exam Project 3</h2>
         <p class="lead" style="font-size: 13pt">Coenraad Human (28410629), Eon Viljoen (28807995) and Morne Venter (28634748).</p>
-        <p><a href="https://github.com/coenraadhuman/ITRW316-Exam_Project_3" class="btn btn-primary btn-lg">Github Repository &raquo;</a></p>
+        <p><a href="https://github.com/coenraadhuman/ITRW316-Exam_Project_3" class="btn btn-primary btn-lg">Github Private Repository &raquo;</a></p>
     </div>
        </div>
     <div class ="mycontainer">
@@ -68,9 +68,6 @@
             </p>
             <p><strong>OS Architecture:</strong>
                 <asp:Label ID="LabelOSArchitecture" runat="server" Text="..."></asp:Label>
-            </p>
-            <p><strong>OS Version: </strong>
-                <asp:Label ID="LabelOSVersion" runat="server" Text="..."></asp:Label>
             </p>
             <p style="font-size: small">
                 <strong>Free Memory:</strong>
