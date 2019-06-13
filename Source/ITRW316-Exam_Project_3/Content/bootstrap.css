@@ -3517,7 +3517,8 @@ fieldset[disabled] .btn-link:focus {
   font-size: 18px;
   line-height: 1.3333333;
   border-radius: 6px;
-    width: 249px;
+    width: 203px;
+    margin-top: 9px;
 }
 .btn-sm,
 .btn-group-sm > .btn {
